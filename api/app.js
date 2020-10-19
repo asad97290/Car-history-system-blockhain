@@ -226,17 +226,23 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
             res.json(getErrorMessage('\'fcn\''));
             return;
         }
-        if (!args) {
-            res.json(getErrorMessage('\'args\''));
-            return;
+        if (args) {
+            console.log('args==========', args);
+            args = args.replace(/'/g, '"');
+            args = JSON.parse(args);
+            logger.debug(args);
+    
+            var message = await query.query(channelName, chaincodeName, args, fcn, req.username, req.orgname);
+    
+        }else if( !args){
+            if( fcn === "queryAllCars"){
+                var message = await query.queryAll(channelName, chaincodeName, fcn, req.username, req.orgname);
+            }
+            else{
+                res.json(getErrorMessage('\'args\''));
+                return;
+            }
         }
-        console.log('args==========', args);
-        args = args.replace(/'/g, '"');
-        args = JSON.parse(args);
-        logger.debug(args);
-
-        let message = await query.query(channelName, chaincodeName, args, fcn, req.username, req.orgname);
-
         const response_payload = {
             result: message,
             error: null,

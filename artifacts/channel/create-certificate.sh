@@ -460,8 +460,8 @@ createArtifacts(){
 
 # createCretificateForOrderer
 
-sudo rm -rf crypto-config/*
-# sudo rm -rf fabric-ca/*
+rm -rf crypto-config/*
+# rm -rf fabric-ca/*
 createcertificatesForOrg1
 createCertificateForOrg2
 createCretificateForOrderer
