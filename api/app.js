@@ -150,7 +150,6 @@ app.post('/users/login', async function (req, res) {
 app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
         logger.debug('==================== INVOKE ON CHAINCODE ==================');
-        var peers = req.body.peers;
         var chaincodeName = req.params.chaincodeName;
         var channelName = req.params.channelName;
         var fcn = req.body.fcn;
@@ -207,7 +206,6 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
         console.log(`chaincode name is :${chaincodeName}`)
         let args = req.query.args;
         let fcn = req.query.fcn;
-        let peer = req.query.peer;
 
         logger.debug('channelName : ' + channelName);
         logger.debug('chaincodeName : ' + chaincodeName);
@@ -269,7 +267,6 @@ app.get('/qscc/channels/:channelName/chaincodes/:chaincodeName', async function 
         console.log(`chaincode name is :${chaincodeName}`)
         let args = req.query.args;
         let fcn = req.query.fcn;
-        // let peer = req.query.peer;
 
         logger.debug('channelName : ' + channelName);
         logger.debug('chaincodeName : ' + chaincodeName);
