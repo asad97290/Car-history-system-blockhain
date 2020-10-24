@@ -18,7 +18,6 @@ const port = process.env.PORT || constants.port;
 
 const helper = require('./app/helper')
 const invoke = require('./app/invoke')
-const qscc = require('./app/qscc')
 const query = require('./app/query')
 
 app.options('*', cors());
@@ -145,7 +144,6 @@ app.post('/users/login', async function (req, res) {
     }
 });
 
-
 // Invoke transaction on chaincode on target peers
 app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
@@ -176,7 +174,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
             res.json(getErrorMessage('\'args\''));
             return;
         }
-
+        
         let message = await invoke.invokeTransaction(channelName, chaincodeName, fcn, args, req.username, req.orgname, transient);
         console.log(`message result is : ${message}`)
 
@@ -197,6 +195,7 @@ app.post('/channels/:channelName/chaincodes/:chaincodeName', async function (req
     }
 });
 
+// Query transaction
 app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
     try {
         logger.debug('==================== QUERY BY CHAINCODE ==================');
@@ -246,63 +245,8 @@ app.get('/channels/:channelName/chaincodes/:chaincodeName', async function (req,
             error: null,
             errorData: null
         }
-
         res.send(response_payload);
-    } catch (error) {
-        const response_payload = {
-            result: null,
-            error: error.name,
-            errorData: error.message
-        }
-        res.send(response_payload)
-    }
-});
-
-app.get('/qscc/channels/:channelName/chaincodes/:chaincodeName', async function (req, res) {
-    try {
-        logger.debug('==================== QUERY BY CHAINCODE ==================');
-
-        var channelName = req.params.channelName;
-        var chaincodeName = req.params.chaincodeName;
-        console.log(`chaincode name is :${chaincodeName}`)
-        let args = req.query.args;
-        let fcn = req.query.fcn;
-
-        logger.debug('channelName : ' + channelName);
-        logger.debug('chaincodeName : ' + chaincodeName);
-        logger.debug('fcn : ' + fcn);
-        logger.debug('args : ' + args);
-
-        if (!chaincodeName) {
-            res.json(getErrorMessage('\'chaincodeName\''));
-            return;
-        }
-        if (!channelName) {
-            res.json(getErrorMessage('\'channelName\''));
-            return;
-        }
-        if (!fcn) {
-            res.json(getErrorMessage('\'fcn\''));
-            return;
-        }
-        if (!args) {
-            res.json(getErrorMessage('\'args\''));
-            return;
-        }
-        console.log('args==========', args);
-        args = args.replace(/'/g, '"');
-        args = JSON.parse(args);
-        logger.debug(args);
-
-        let response_payload = await qscc.qscc(channelName, chaincodeName, args, fcn, req.username, req.orgname);
-
-        // const response_payload = {
-        //     result: message,
-        //     error: null,
-        //     errorData: null
-        // }
-
-        res.send(response_payload);
+    
     } catch (error) {
         const response_payload = {
             result: null,

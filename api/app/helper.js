@@ -1,11 +1,11 @@
 'use strict';
 
-var { Gateway, Wallets } = require('fabric-network');
+
+var { Wallets } = require('fabric-network');
 const path = require('path');
 const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 
-const util = require('util');
 
 const getCCP = async (org) => {
     let ccpPath;
@@ -52,7 +52,7 @@ const getAffiliation = async (org) => {
     return org == "Org1" ? 'org1.department1' : 'org2.department1'
 }
 
-const getRegisteredUser = async (username, userOrg, isJson) => {
+const getRegisteredUser = async (username, userOrg) => {
     let ccp = await getCCP(userOrg)
 
     const caURL = await getCaUrl(userOrg, ccp)

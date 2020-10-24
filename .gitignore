@@ -39,8 +39,8 @@ api/package-lock.json
 crypto/*
 
 
-artifacts/src/github.com/fabcar/go/vendor
-artifacts/src/github.com/fabcar/go/go.sum
+artifacts/src/chaincode/vendor
+artifacts/src/chaincode/go.sum
 crypto/fabric-client-kv-org1
 fabcar.tar.gz
 
