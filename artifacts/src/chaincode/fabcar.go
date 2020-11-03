@@ -10,7 +10,6 @@ import (
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	sc "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/common/flogging"
-
 )
 
 // SmartContract Define the Smart Contract structure
@@ -19,10 +18,13 @@ type SmartContract struct {
 
 // Car :  Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
 type Car struct {
+	VIN	   string `json:"vin"`
+	Year   string `json:"year"`	
 	Make   string `json:"make"`
 	Model  string `json:"model"`
 	Colour string `json:"colour"`
 	Owner  string `json:"owner"`
+	EngineNumber  string `json:"engineNumber"`
 }
 
 // Init ;  Method for initializing smart contract
@@ -71,16 +73,12 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Ali"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Asad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Saif"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "shahbaz khan"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "huma khan"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Nasrullah khan"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "atif"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "fahd khan"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "umair ahmed khan"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "usman"},
+		Car{VIN: "4Y1SL65848Z411439", Year:"2020", Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Ali", EngineNumber: "52WVC10358"},
+		Car{VIN: "7Y1SL65848Z421449", Year:"2019", Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Asad", EngineNumber: "82XVC10349"},
+		Car{VIN: "6H1SL65848Z451479", Year:"2000", Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Saif",EngineNumber: "12UVC10368"},
+		Car{VIN: "5X1SL65848Z441448", Year:"2018", Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "shahbaz khan",EngineNumber: "92WVC10338"},
+		Car{VIN: "9B1SL65848Z431439", Year:"2008", Make: "Tesla", Model: "S", Colour: "black", Owner: "huma khan",EngineNumber: "82WVC10318"},
+		Car{VIN: "8A1SL65848Z421439", Year:"2017", Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Nasrullah khan",EngineNumber: "22WVC10368"},
 	}
 
 	i := 0
@@ -95,11 +93,11 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 5 {
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+	if len(args) != 8 {
+		return shim.Error("Incorrect number of arguments. Expecting 8")
 	}
 
-	var car = Car{Make: args[1], Model: args[2], Colour: args[3], Owner: args[4]}
+	var car = Car{VIN: args[1], Year: args[2], Make: args[3], Model: args[4], Colour: args[5], Owner: args[6], EngineNumber:args[7]}
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
@@ -316,7 +314,6 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 
 // The main function is only relevant in unit test mode. Only included here for completeness.
 func main() {
-
 	// Create a new Smart Contract
 	err := shim.Start(new(SmartContract))
 	if err != nil {

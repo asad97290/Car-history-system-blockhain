@@ -55,8 +55,8 @@ createChannel(){
 }
 
 removeOldCrypto(){
-    rm -rf ./api/org1-wallet/*
-    rm -rf ./api/org2-wallet/*
+    rm -rf ./backend/org1-wallet/*
+    rm -rf ./backend/org2-wallet/*
 }
 
 
