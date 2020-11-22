@@ -2,9 +2,10 @@ version: 0
 tlsconfig:
   certpath: ""
   keypath: ""
-  peercacertpath: ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem
+  peercacertpath: ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/tlscacerts/tls-localhost-7054-ca-org1-example-com.pem
   timeout: 0s
 signerconfig:
   mspid: Org1MSP
-  identitypath: ../crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/User1@org1.example.com-cert.pem
-  keypath: ../crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/priv_sk
+  identitypath: ../crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/signcerts/cert.pem
+  keypath: ../crypto-config/peerOrganizations/org1.example.com/users/User1@org1.example.com/msp/keystore/d8c167c7776aab16c57d75807c91d4a9d47657bc462e7ca2f74c2ee94bfd3092_sk
+  

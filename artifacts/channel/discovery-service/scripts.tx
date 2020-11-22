@@ -11,3 +11,4 @@
 
 3) Endorsers query
     discover --configFile conf.yaml endorsers --channel mychannel  --server localhost:7051 --chaincode fabcar
+    

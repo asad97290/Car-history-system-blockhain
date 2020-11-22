@@ -1,1 +1,0 @@
-export default ()=>(<div>About Us page</div>)

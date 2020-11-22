@@ -6,12 +6,6 @@ export FABRIC_CFG_PATH=${PWD}/artifacts/channel/config/
 
 export CHANNEL_NAME=mychannel
 
-# setGlobalsForOrderer(){
-#     export CORE_PEER_LOCALMSPID="OrdererMSP"
-#     export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-#     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/users/Admin@example.com/msp
-    
-# }
 
 setGlobalsForPeer0Org1(){
     export CORE_PEER_LOCALMSPID="Org1MSP"
@@ -55,8 +49,8 @@ createChannel(){
 }
 
 removeOldCrypto(){
-    rm -rf ./backend/org1-wallet/*
-    rm -rf ./backend/org2-wallet/*
+    rm -rf ./Frontend/api/org1-wallet/*
+    rm -rf ./Frontend/api/org2-wallet/*
 }
 
 
@@ -89,3 +83,6 @@ removeOldCrypto
 createChannel
 joinChannel
 updateAnchorPeers
+
+
+
