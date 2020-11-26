@@ -30,3 +30,9 @@ Frontend/api/org1-wallet
 Frontend/api/org2-wallet
 artifacts/channel/fabric-ca
 artifacts/channel/crypto-config
+
+Frontend/api/node_modules
+Frontend/client/node_modules
+
+/api/org1-wallet/*
+/api/org2-wallet/*
