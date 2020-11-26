@@ -1,0 +1,32 @@
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+artifacts/channel/mychannel.tx
+artifacts/channel/genesis.block
+artifacts/channel/Org1MSPanchors.tx
+artifacts/channel/Org2MSPanchors.tx
+
+
+fabcar.tar.gz
+artifacts/src/chaincode/vendor
+artifacts/src/chaincode/go.sum
+
+channel-artifacts/mychannel.block
+log.txt
+Frontend/api/org1-wallet
+Frontend/api/org2-wallet
+artifacts/channel/fabric-ca
+artifacts/channel/crypto-config

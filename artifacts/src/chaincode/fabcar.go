@@ -71,11 +71,7 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	cars := []Car{
-		Car{VIN: "4Y1SL65848Z411439", Year:"2020", Make: "Toyota", Model: "Corolla", Colour: "blue", OwnerEmail: "asadmuhammad427@gmail.com", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg"},
-		Car{VIN: "7Y1SL65848Z421449", Year:"2019", Make: "Honda", Model: "City", Colour: "red", OwnerEmail: "abbas_canser@gmail.com", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/city.jpeg"},
-		Car{VIN: "6H1SL65848Z451479", Year:"2017", Make: "Suzuki", Model: "Alto", Colour: "white", OwnerEmail: "m_owais@gmail.com",CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/alto.jpg"},
-		Car{VIN: "5X1SL65848Z441448", Year:"2018", Make: "Audi", Model: "R8", Colour: "yellow", OwnerEmail: "syedtalhaaskri@gmail.com",CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/Audi-R8.jpg"},
-		Car{VIN: "9B1SL65848Z431439", Year:"2008", Make: "Mercedes", Model: "Benz", Colour: "black", OwnerEmail: "saifkhan@gmail.com",CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/benz.jpeg"},
+		Car{VIN: "4Y1SL65848Z411439", Year:"2018", Make: "Toyota", Model: "Corolla", Colour: "white", OwnerEmail: "asadmuhammad427@gmail.com", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg"},
 	}
 
 	i := 0
@@ -163,7 +159,6 @@ func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, ar
 
 	return shim.Success(cars)
 }
-
 
 func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, args []string) sc.Response {
 

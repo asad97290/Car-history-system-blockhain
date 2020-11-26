@@ -4,7 +4,6 @@ export PEER0_ORG1_CA=${PWD}/artifacts/channel/crypto-config/peerOrganizations/or
 export PEER0_ORG2_CA=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 export FABRIC_CFG_PATH=${PWD}/artifacts/channel/config/
 
-# export PRIVATE_DATA_CONFIG=${PWD}/artifacts/private-data/collections_config.json
 
 export CHANNEL_NAME=mychannel
 
@@ -19,7 +18,6 @@ setGlobalsForPeer0Org1() {
     export CORE_PEER_LOCALMSPID="Org1MSP"
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
     export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-    # export CORE_PEER_MSPCONFIGPATH=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp
     export CORE_PEER_ADDRESS=localhost:7051
 }
 
@@ -54,7 +52,7 @@ presetup() {
     popd
     echo Finished vendoring Go dependencies
 }
-# presetup
+
 
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
@@ -70,7 +68,7 @@ packageChaincode() {
         --label ${CC_NAME}_${VERSION}
     echo "===================== Chaincode is packaged on peer0.org1 ===================== "
 }
-# packageChaincode
+
 
 installChaincode() {
     setGlobalsForPeer0Org1
@@ -84,7 +82,7 @@ installChaincode() {
     
 }
 
-# installChaincode
+
 
 queryInstalled() {
     setGlobalsForPeer0Org1
@@ -97,7 +95,7 @@ queryInstalled() {
 
 approveForMyOrg1() {
     setGlobalsForPeer0Org1
-    # set -x
+
     peer lifecycle chaincode approveformyorg -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com --tls \
         --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${VERSION} \
@@ -126,7 +124,6 @@ checkCommitReadyness() {
     echo "===================== checking commit readyness from org 1 ===================== "
 }
 
-# checkCommitReadyness
 
 approveForMyOrg2() {
     setGlobalsForPeer0Org2
@@ -140,7 +137,7 @@ approveForMyOrg2() {
     echo "===================== chaincode approved from org 2 ===================== "
 }
 
-# approveForMyOrg2
+
 
 checkCommitReadyness() {
 
@@ -151,7 +148,6 @@ checkCommitReadyness() {
     echo "===================== checking commit readyness from org 1 ===================== "
 }
 
-# checkCommitReadyness
 
 commitChaincodeDefination() {
     setGlobalsForPeer0Org1
@@ -164,7 +160,6 @@ commitChaincodeDefination() {
 
 }
 
-# commitChaincodeDefination
 
 queryCommitted() {
     setGlobalsForPeer0Org1
@@ -172,7 +167,6 @@ queryCommitted() {
 
 }
 
-# queryCommitted
 
 chaincodeInvokeInit() {
     setGlobalsForPeer0Org1
@@ -186,7 +180,7 @@ chaincodeInvokeInit() {
 
 }
 
-# chaincodeInvokeInit
+
 
 chaincodeInvoke() {
   
@@ -205,21 +199,17 @@ chaincodeInvoke() {
 
 }
 
-# chaincodeInvoke
 
 chaincodeQuery() {
     setGlobalsForPeer0Org2
-
-
     # Query Car by Id
     peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "queryCar","Args":["4Y1SL65848Z411439"]}'
     
 }
 
-# chaincodeQuery
 
 # Run this function if you add any new dependency in chaincode
-# presetup
+presetup
 
 packageChaincode
 installChaincode
