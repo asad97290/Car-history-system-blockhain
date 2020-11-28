@@ -12,29 +12,38 @@ import {
 import { Link, useParams } from "react-router-dom";
 
 function Data() {
-  const { token } = useParams();
-  const { email } = useParams();
-  const [cars, setCars] = useState([]);
-  const data = {};
-  const [selectedFile, setSelectedFile] = useState({ selected: null });
+  const [ token,setToken ] = useState(() =>
+    JSON.parse(localStorage.getItem("token"))
+  );
+  
+  const [ email,setEmail ] = useState(() =>
+    localStorage.getItem("email")
+  );
+
+  const [organization, setOrganization ] = useState(() =>
+    localStorage.getItem("organization")
+  );
+
+  if (!token) {
+    window.location.pathname = "/signin"
+  }
 
   const url = "http://localhost:4000/channels/mychannel/chaincodes/fabcar";
   const url2 = url + `?args=["${email}"]&fcn=queryCarsByOwner`;
-
+  
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   };
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios.get(url2, conf);
-      // response.catch(error => console.log(error))
-      setCars(response.data.result);
-    }
-    fetchData();
-  }, [cars]);
+  const [cars, setCars] = useState([]);
+  const data = {};
+  const [selectedFile, setSelectedFile] = useState({ selected: null });
+  
+  axios.get(url2, conf).then((response) => {
+    setCars(response.data.result);
+  });
 
   const singleFileChangedHandler = (event) => {
     setSelectedFile({
@@ -100,8 +109,27 @@ function Data() {
     data["chaincodeName"] = "fabcar";
     data["channelName"] = "mychannel";
     data["args"] = args;
-    axios.post(url, data, conf).then(function (response) {});
+    axios.post(url, data, conf).then(function (response) {alert("Success")});
+    document.getElementById("carVin").value = "";
+    document.getElementById("carOwner").value = "";
   }
+
+  function changeCarColour(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const args = [];
+    for (let key of formData.keys()) {
+      args.push(formData.get(key));
+    }
+    data["fcn"] = "changeCarColor";
+    data["chaincodeName"] = "fabcar";
+    data["channelName"] = "mychannel";
+    data["args"] = args;
+    console.log("Color ===> ", data["args"][1])
+    axios.post(url, data, conf).then(function (response) {alert("Success")});
+    document.getElementById("carVin").value = "";
+  }
+
   function createCarAsset(event, loc) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -117,8 +145,12 @@ function Data() {
     data["channelName"] = "mychannel";
     data["args"] = args;
 
-    axios.post(url, data, conf).then(function (response) {});
+    axios.post(url, data, conf).then(function (response) {alert("Success")}).catch(error => {alert("Something Went Wrong! Try Again.")});
     document.getElementById("carVin").value = "";
+    document.getElementById("color").value = "";
+    document.getElementById("make").value = "";
+    document.getElementById("model").value = "";
+    document.getElementById("year").value = "";
     document.getElementById("carOwner").value = "";
   }
 
@@ -148,11 +180,6 @@ function Data() {
               </button>
             </div>
             <div className="modal-body">Transaction Executed Successfully</div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-primary">
-                OK
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -167,21 +194,22 @@ function Data() {
                   <div className="row">
                     {cars.map((car, index) => {
                       return (
-                        <div key={index} className="col-12 col-md-6">
+                        <div key={index} className="col-12 col-md-6 mb-4">
                           <div className="card p-3 d-flex align-content-between flex-wrap">
-                            <img
-                              src={car.carPic}
-                              className="card-img-top"
-                              alt="..."
-                              style={{ height: "260px !important" }}
-                            />
+                            <div style={{ height: "150px"}}>
+                              <img
+                                src={car.carPic}
+                                className="card-img-top mh-100 mw-100"
+                                alt="..."
+                              />
+                            </div>
                             <div className="card-body text-left">
                               <h5 className="card-title text-dark font-weight-bold">
                                 {car.make} {car.model} {car.year}
                               </h5>
                               <Link
-                                to={"/car/" + car.vin + "/" + token}
-                                className="btn btn-primary"
+                                to={"/car/" + car.vin}
+                                className="btn btn-danger"
                               >
                                 View
                               </Link>
@@ -207,6 +235,8 @@ function Data() {
                       required
                       name="vin"
                       id="vin"
+                      minLength="17"
+                      maxLength="17"
                     />
                   </Form.Group>
 
@@ -218,6 +248,8 @@ function Data() {
                       required
                       id="year"
                       name="year"
+                      min="2010"
+                      max="2021"
                     />
                   </Form.Group>
                   <Form.Group>
@@ -243,7 +275,7 @@ function Data() {
                   <Form.Group>
                     <Form.Label>Color *</Form.Label>
                     <Form.Control
-                      type="text"
+                      type="color"
                       id="color"
                       placeholder="Enter Color Here"
                       required
@@ -264,21 +296,21 @@ function Data() {
                   <Button
                     variant="primary"
                     type="submit"
-                    className="w-100 mt-2"
+                    className="w-100 mt-2 btn-danger"
                     data-toggle="modal"
-                    data-target="#exampleModal"
+                    id="submit"
                   >
                     Submit
                   </Button>
                 </Form>
               </Tab.Pane>
               <Tab.Pane eventKey="#link3" className="text-center">
-                <h4>Ownership Transforship (Car)</h4>
+                <h4>Ownership Transfership (Car)</h4>
                 <Form
                   className="text-left addForm py-4 mb-3"
                   onSubmit={transferOwnership}
                 >
-                  <Form.Group controlId="exampleForm.ControlInput1">
+                  <Form.Group>
                     <Form.Label>VIN *</Form.Label>
                     <Form.Control
                       type="text"
@@ -286,9 +318,11 @@ function Data() {
                       placeholder="Enter Your VIN Here"
                       required
                       name="vin"
+                      minLength="17"
+                      maxLength="17"
                     />
                   </Form.Group>
-                  <Form.Group controlId="exampleForm.ControlInput2">
+                  <Form.Group>
                     <Form.Label>Email *</Form.Label>
                     <Form.Control
                       type="text"
@@ -301,7 +335,46 @@ function Data() {
                   <Button
                     variant="primary"
                     type="submit"
-                    className="w-100 mt-2"
+                    className="w-100 mt-2 btn-danger"
+                    data-toggle="modal"
+                    
+                  >
+                    Submit
+                  </Button>
+                </Form>
+              </Tab.Pane>
+              <Tab.Pane eventKey="#link4" className="text-center">
+                <h4>Update Car Color</h4>
+                <Form
+                  className="text-left addForm py-4 mb-3"
+                  onSubmit={changeCarColour}
+                >
+                  <Form.Group>
+                    <Form.Label>VIN *</Form.Label>
+                    <Form.Control
+                      type="text"
+                      id="carVin"
+                      placeholder="Enter Your VIN Here"
+                      required
+                      name="vin"
+                      minLength="17"
+                      maxLength="17"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Car *</Form.Label>
+                    <Form.Control
+                      type="color"
+                      id="Colour"
+                      // placeholder="Enter Owner's Name"
+                      required
+                      name="Colour"
+                    />
+                  </Form.Group>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="w-100 mt-2 btn-danger"
                     data-toggle="modal"
                     data-target="#exampleModal"
                   >
@@ -313,17 +386,28 @@ function Data() {
           </Col>
           <Col sm={4}>
             <h4>Hello, {email} </h4>
-            <br />
+             <h6>Organization: {organization === "Org1"? "Manufacturer":"Car Owner"} </h6>
+            <br/>
             <ListGroup>
               <ListGroup.Item action href="#link1">
                 My Car(s)
               </ListGroup.Item>
+              {organization === "Org1" ? <>
               <ListGroup.Item action href="#link2">
-                Create Car
-              </ListGroup.Item>
-              <ListGroup.Item action href="#link3">
-                Transfer Ownership
-              </ListGroup.Item>
+              Create Car
+            </ListGroup.Item>
+            <ListGroup.Item action href="#link3">
+              Transfer Ownership
+            </ListGroup.Item></> :
+            <>
+          <ListGroup.Item action href="#link3">
+            Transfer Ownership
+          </ListGroup.Item>
+          <ListGroup.Item action href="#link4">
+          Change Car Color
+        </ListGroup.Item></>
+            }
+              
             </ListGroup>
           </Col>
         </Row>

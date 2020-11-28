@@ -8,8 +8,7 @@ function Data(props) {
                     <div className="col-12 mb-4">
                         <h2>What we do</h2>
                         <p>
-                            Car History Verification System's vehicle history report covers a range of topics that buyer’s need. It includes vehicle's information. Car History Verification System compiles data a network of government, non-government, and auto industry sources. Access our comprehensive database to get a full vehicle history report using our free VIN check.
-                        </p>
+                        Welcome to car History and ownership verification system. Here you can perform a VIN check to get a full vehicle history report. Long gone are the days when it was nearly impossible to find a complete history of a vehicle. With Car History and ownership verification system, it’s fast and easy to know the entire history of your next car.</p>
                     </div>
                     <div className="col-12 col-sm-6">
                         <h2>Our History</h2>

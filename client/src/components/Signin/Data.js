@@ -29,7 +29,10 @@ function Data() {
 
             if (response.data.success) {
                 localStorage.setItem("token",JSON.stringify(response.data.message.token))
-                window.location.pathname = "/profile/" + userEmail + "/" + response.data.message.token
+                localStorage.setItem("email",userEmail)
+                localStorage.setItem("organization",orgName)
+                window.location.pathname = "/profile/" + userEmail 
+
             }
             else if (response.data.success === false) {
                 alert ("Wrong Certificate")

@@ -70,6 +70,10 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userEmai
             result = await contract.submitTransaction(fcn, args[0], args[1]);
             message = `Successfully changed car owner with key ${args[0]}`
         } 
+        else if (fcn === "changeCarColor") {
+            result = await contract.submitTransaction(fcn, args[0], args[1]);
+            message = `Successfully changed car color with key ${args[0]}`
+        } 
         else {
             return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
         }

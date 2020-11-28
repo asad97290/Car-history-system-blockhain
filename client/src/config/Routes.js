@@ -19,8 +19,8 @@ function Routes() {
           <Route path="/about" component={About} />
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/signup" component={Signup} />
-          <Route path="/car/:vin/:token" component={Car} />
-          <Route path="/profile/:email/:token" component={Profile} />
+          <Route path="/car/:vin" component={Car} />
+          <Route path="/profile/:email" component={Profile} />
           <Route path="*" component={() => <h2>Page Not Found</h2>} />
         </Switch>
       </Router>

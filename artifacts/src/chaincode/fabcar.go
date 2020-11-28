@@ -50,6 +50,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.createCar(APIstub, args)
 	case "changeCarOwner":
 		return s.changeCarOwner(APIstub, args)
+	case "changeCarColor":
+		return s.changeCarColor(APIstub, args)
 	case "getHistoryForAsset":
 		return s.getHistoryForAsset(APIstub, args)
 	case "queryCarsByOwner":
@@ -252,6 +254,43 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 
 	// add new key
 	newOwnerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{args[1], args[0]})
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	value := []byte{0x00}
+	APIstub.PutState(newOwnerCaridIndexKey, value)
+
+	return shim.Success(carAsBytes)
+}
+func (s *SmartContract) changeCarColor(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
+	indexName := "ownerEmail~vin"
+	carAsBytes, _ := APIstub.GetState(args[0])
+	car := Car{}
+
+	json.Unmarshal(carAsBytes, &car)
+	// delete old key
+	ownerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	err = APIstub.DelState(ownerCaridIndexKey)
+	if err != nil {
+		return shim.Error("Failed to delete state:" + err.Error())
+	}
+
+	// add new record
+	car.Colour = args[1]
+
+	carAsBytes, _ = json.Marshal(car)
+	APIstub.PutState(args[0], carAsBytes)
+
+	// add new key
+	newOwnerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}

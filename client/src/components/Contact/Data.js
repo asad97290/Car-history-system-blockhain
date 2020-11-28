@@ -11,11 +11,10 @@ function Data(props) {
                     <div className="col-12 col-sm-4 offset-sm-1">
                         <h5>Our Address</h5>
                         <address style={{fontSize: "100%"}}>
-                            ABC<br />
-                    XYZ<br />
-                    JKL<br />
+                        University Rd, Block 5 Gulshan-e-Iqbal, Karachi<br />
+                   
                             <i className="fa fa-phone fa-lg"></i>: +92 123 4567890<br />
-                            <i className="fa fa-fax fa-lg"></i>: +92 123 4567890<br />
+                            <i className="fa fa-fax fa-lg"></i>: +92 678 123456<br />
                             <i className="fa fa-envelope fa-lg"></i>: <a
                                 href="mailto:blockchain@lifecycle.com">blockchain@lifecycle.com</a>
                         </address>

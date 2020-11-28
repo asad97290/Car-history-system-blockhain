@@ -31,11 +31,43 @@ function Data() {
                 element.download = `${email}${orgName}.id`;
                 document.body.appendChild(element);
                 element.click();
-            }).then(()=>alert("Keep the certficate safe")).catch(function (error) { console.log(error); });  
+                document.getElementById("userEmail").value = "";
+                document.getElementById("orgName").value = "";
+            }).catch(function (error) { console.log(error); });  
+      
     }
 
     return (
+        
         <div className="container">
+        <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Success
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">Keep Certificate Safe</div>
+            
+          </div>
+        </div>
+      </div>
             <div className="row mx-auto justify-content-center row-content text-center" style={{ width: "95%" }}>
                 <div className="col-12 ">
                     <h2>Organization Registration Form</h2>
@@ -47,12 +79,12 @@ function Data() {
                         <Form.Group>
                             <Form.Label>Organization *</Form.Label>
                             <Form.Control as="select" required name="orgName" id="orgName">
-                                <option>Org1</option>
-                                <option>Org2</option>
+                                <option value="Org1">Manufacturer</option>
+                                <option value="Org2">Car Owner</option>
                             </Form.Control>
                         </Form.Group>
 
-                        <Button type="submit" style={{backgroundColor: "#DC3545"}} className="w-100 mt-2">
+                        <Button data-toggle="modal" data-target="#exampleModal" type="submit" style={{backgroundColor: "#DC3545"}} className="w-100 mt-2">
                             Submit
                         </Button>
                     </Form>

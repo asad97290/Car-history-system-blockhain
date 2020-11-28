@@ -3,9 +3,14 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 function Data() {
+  const [ token,setToken ] = useState( ()=>JSON.parse(localStorage.getItem("token")))
   const [car, setCar] = useState({});
   const [carHistory, setCarHistory] = useState([]);
-  const { token } = useParams();
+  
+  if (!token) {
+    window.location.pathname = "/signin"
+  }
+
   const { vin } = useParams();
 
   const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
@@ -34,7 +39,6 @@ function Data() {
     elem.select();
     document.execCommand("copy");
     document.body.removeChild(elem);
-    alert("copy text to clipboard")
 }
 
   return (
@@ -100,7 +104,7 @@ function Data() {
                           <p className="text-secondary">Color</p>
                         </div>
                         <div className="col-6">
-                          <p className="h6"> {car.colour} </p>
+                          <p style={{border: "1px solid black", width: "60px", height: "20px", backgroundColor: car.colour}}></p>
                         </div>
                       </div>
                       <div className="row">
@@ -141,6 +145,9 @@ function Data() {
                                 Model: {carInfo.Value.make}{" "}
                                 {carInfo.Value.model}
                                 {carInfo.Value.year}
+                                <br />
+                                <div className="d-flex">
+                                Color:&nbsp;<p style={{border: "1px solid black", width: "60px", height: "20px", backgroundColor: carInfo.Value.colour}}></p></div>
                               </p>
                             </li>
                           );

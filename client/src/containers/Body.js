@@ -1,23 +1,50 @@
 import React, { useState,Fragment } from 'react';
+import { Button, Form } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
 import car from "../assets/cars/banner.png";
-
+import axios from "axios"
 
 function Body() {
 
     const[vin,setVin]= useState("")
     const[token,setToken]= useState("")
+
+    const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+    let conf = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
     
     const handleOnChange = ( event ) => {
         setVin(event.target.value)
         setToken(()=>JSON.parse(localStorage.getItem("token")))
     }
-    
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        if (token) {
+            axios.get(url1, conf).then(response => {
+                console.log(response.data.result.length)
+                if(response.data.result.length === 0){
+                    alert("Invalid VIN Number")
+                } 
+                else{
+                window.location.pathname = "/car/" + vin +"/"+token
+                }
+            });
+        }
+        else {
+            alert("Signin First to Continue")
+        }
+    }
+
+    
 
     return (
         <Fragment>
-            <div className="bg-light">
+            <div className="bg-light ">
                 <div className="container py-5">
                     <div className="row text-center">
                         <h2><span style={{color: "#DC3545"}}>Complete vehicle data all in one marketplace</span> - making automotive more secure, transparent and accessible by all</h2>
@@ -28,9 +55,17 @@ function Body() {
                                 <div className="card-body">
                                     <h4 className="card-title">Get an in depth vehicle history report:</h4>
                                     <p className="text-secondary">350+ Million records and counting</p>
-                                    <input  onChange={handleOnChange} className="form-control my-0 bg-light py-1 amber-border text-center" type="text" placeholder="ENTER VIN NUMBER"
-                                        aria-label="Search" id="search" />
-                                    <Link to = {"/car/" + vin +"/"+token} className="btn btn-danger text-white w-100 mt-3 font-weight-bold" >SEARCH</Link>
+                                    <Form onSubmit={handleSubmit}>
+                            <Form.Control onChange={handleOnChange} minLength="17" maxLength="17" className="my-0 bg-light py-1 amber-border text-center" id="vin" type="text" placeholder="ENTER VIN NUMBER" required name="vin" />
+                        
+
+                        <Button type="submit" className="btn btn-danger text-white w-100 mt-3 font-weight-bold">
+                            SEARCH
+                        </Button>
+                    </Form>
+                                    {/* <input  onChange={handleOnChange} className="form-control my-0 bg-light py-1 amber-border text-center" type="text" placeholder="ENTER VIN NUMBER"
+                                        aria-label="Search" id="search" minLength={17} maxLength={17}/>
+                                    <button className="btn btn-danger text-white w-100 mt-3 font-weight-bold" >SEARCH</button> */}
                                 </div>
                             </div>
                         </div>
