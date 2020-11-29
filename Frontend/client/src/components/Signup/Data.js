@@ -21,6 +21,7 @@ function Data() {
         }
         axios.post(url, data, conf
         	).then(function (response) { 
+            if(response.data.success){
                 var email = document.getElementById("userEmail").value
                 var orgName = document.getElementById("orgName").value
                 var text = response.data.x509Identity.credentials.certificate
@@ -33,6 +34,10 @@ function Data() {
                 element.click();
                 document.getElementById("userEmail").value = "";
                 document.getElementById("orgName").value = "";
+            }
+            else{
+                alert(response.data.message)
+            }
             }).catch(function (error) { console.log(error); });  
       
     }
@@ -40,34 +45,6 @@ function Data() {
     return (
         
         <div className="container">
-        <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Success
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">Keep Certificate Safe</div>
-            
-          </div>
-        </div>
-      </div>
             <div className="row mx-auto justify-content-center row-content text-center" style={{ width: "95%" }}>
                 <div className="col-12 ">
                     <h2>Organization Registration Form</h2>
@@ -84,7 +61,7 @@ function Data() {
                             </Form.Control>
                         </Form.Group>
 
-                        <Button data-toggle="modal" data-target="#exampleModal" type="submit" style={{backgroundColor: "#DC3545"}} className="w-100 mt-2">
+                        <Button type="submit" style={{backgroundColor: "#DC3545"}} className="w-100 mt-2">
                             Submit
                         </Button>
                     </Form>

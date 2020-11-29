@@ -155,14 +155,6 @@ app.post("/users", async function (req, res) {
     return;
   }
 
-  var token = jwt.sign(
-    {
-      exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
-      userEmail: userEmail,
-      orgName: orgName,
-    },
-    app.get("secret")
-  );
 
   let response = await helper.getRegisteredUser(userEmail, orgName, true);
 
@@ -177,7 +169,6 @@ app.post("/users", async function (req, res) {
       userEmail,
       orgName
     );
-    response.token = token;
     res.json(response);
   } else {
     logger.debug(

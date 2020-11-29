@@ -9,41 +9,42 @@ import {
   Row,
   Tab,
 } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Data() {
-  const [ token,setToken ] = useState(() =>
+  const [token, setToken] = useState(() =>
     JSON.parse(localStorage.getItem("token"))
   );
-  
-  const [ email,setEmail ] = useState(() =>
-    localStorage.getItem("email")
-  );
 
-  const [organization, setOrganization ] = useState(() =>
+  const [email, setEmail] = useState(() => localStorage.getItem("email"));
+
+  const [organization, setOrganization] = useState(() =>
     localStorage.getItem("organization")
   );
 
   if (!token) {
-    window.location.pathname = "/signin"
+    window.location.pathname = "/signin";
   }
 
   const url = "http://localhost:4000/channels/mychannel/chaincodes/fabcar";
   const url2 = url + `?args=["${email}"]&fcn=queryCarsByOwner`;
-  
+
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
   };
+
   const [cars, setCars] = useState([]);
   const data = {};
   const [selectedFile, setSelectedFile] = useState({ selected: null });
+  useEffect(() => {
+    axios.get(url2, conf).then((response) => {
+      setCars(response.data.result);
+    });
+  }, []);
   
-  axios.get(url2, conf).then((response) => {
-    setCars(response.data.result);
-  });
 
   const singleFileChangedHandler = (event) => {
     setSelectedFile({
@@ -80,6 +81,9 @@ function Data() {
               }
             } else {
               // Success
+              if(window.location.hash == "#link2"){
+
+             
               createCarAsset(event, response.data.location);
               document.getElementById("vin").value = "";
               document.getElementById("make").value = "";
@@ -87,6 +91,14 @@ function Data() {
               document.getElementById("color").value = "";
               document.getElementById("carImage").value = "";
               document.getElementById("year").value = "";
+              }
+              else if(window.location.hash == "#link4"){
+                console.log(response.data.location)
+                changeCarColour(event,response.data.location)
+                document.getElementById("carVin").value = "";
+                document.getElementById("color").value = "";
+                document.getElementById("carImg").value = "";
+              }
             }
           }
         })
@@ -109,25 +121,32 @@ function Data() {
     data["chaincodeName"] = "fabcar";
     data["channelName"] = "mychannel";
     data["args"] = args;
-    axios.post(url, data, conf).then(function (response) {alert("Success")});
+    axios.post(url, data, conf).then(function (response) {
+      alert("Success");
+    });
     document.getElementById("carVin").value = "";
     document.getElementById("carOwner").value = "";
   }
 
-  function changeCarColour(event) {
+  function changeCarColour(event,loc) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const args = [];
     for (let key of formData.keys()) {
       args.push(formData.get(key));
     }
+    args.pop();
+    args.push(loc);
     data["fcn"] = "changeCarColor";
     data["chaincodeName"] = "fabcar";
     data["channelName"] = "mychannel";
     data["args"] = args;
-    console.log("Color ===> ", data["args"][1])
-    axios.post(url, data, conf).then(function (response) {alert("Success")});
-    document.getElementById("carVin").value = "";
+    console.log("Color ===> ", data["args"][2]);
+
+    axios.post(url, data, conf).then(function (response) {
+      alert("Success");
+    });
+
   }
 
   function createCarAsset(event, loc) {
@@ -145,13 +164,17 @@ function Data() {
     data["channelName"] = "mychannel";
     data["args"] = args;
 
-    axios.post(url, data, conf).then(function (response) {alert("Success")}).catch(error => {alert("Something Went Wrong! Try Again.")});
+    axios
+      .post(url, data, conf)
+      .then(alert("Success"))
+      .catch((error) => {
+        alert("Something Went Wrong! Try Again.");
+      });
     document.getElementById("carVin").value = "";
     document.getElementById("color").value = "";
     document.getElementById("make").value = "";
     document.getElementById("model").value = "";
     document.getElementById("year").value = "";
-    document.getElementById("carOwner").value = "";
   }
 
   return (
@@ -196,7 +219,7 @@ function Data() {
                       return (
                         <div key={index} className="col-12 col-md-6 mb-4">
                           <div className="card p-3 d-flex align-content-between flex-wrap">
-                            <div style={{ height: "150px"}}>
+                            <div style={{ height: "150px" }}>
                               <img
                                 src={car.carPic}
                                 className="card-img-top mh-100 mw-100"
@@ -337,7 +360,6 @@ function Data() {
                     type="submit"
                     className="w-100 mt-2 btn-danger"
                     data-toggle="modal"
-                    
                   >
                     Submit
                   </Button>
@@ -347,7 +369,7 @@ function Data() {
                 <h4>Update Car Color</h4>
                 <Form
                   className="text-left addForm py-4 mb-3"
-                  onSubmit={changeCarColour}
+                  onSubmit={singleFileUploadHandler}
                 >
                   <Form.Group>
                     <Form.Label>VIN *</Form.Label>
@@ -362,21 +384,30 @@ function Data() {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Car *</Form.Label>
+                    <Form.Label>Color *</Form.Label>
                     <Form.Control
                       type="color"
                       id="Colour"
-                      // placeholder="Enter Owner's Name"
                       required
                       name="Colour"
+                    />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Image *</Form.Label>
+                    <Form.Control
+                      onChange={singleFileChangedHandler}
+                      type="file"
+                      id="carImg"
+                      placeholder="Upload Image of Car"
+                      required
+                      name="carPic"
                     />
                   </Form.Group>
                   <Button
                     variant="primary"
                     type="submit"
                     className="w-100 mt-2 btn-danger"
-                    data-toggle="modal"
-                    data-target="#exampleModal"
+                 
                   >
                     Submit
                   </Button>
@@ -386,28 +417,34 @@ function Data() {
           </Col>
           <Col sm={4}>
             <h4>Hello, {email} </h4>
-             <h6>Organization: {organization === "Org1"? "Manufacturer":"Car Owner"} </h6>
-            <br/>
+            <h6>
+              Organization:{" "}
+              {organization === "Org1" ? "Manufacturer" : "Car Owner"}{" "}
+            </h6>
+            <br />
             <ListGroup>
               <ListGroup.Item action href="#link1">
                 My Car(s)
               </ListGroup.Item>
-              {organization === "Org1" ? <>
-              <ListGroup.Item action href="#link2">
-              Create Car
-            </ListGroup.Item>
-            <ListGroup.Item action href="#link3">
-              Transfer Ownership
-            </ListGroup.Item></> :
-            <>
-          <ListGroup.Item action href="#link3">
-            Transfer Ownership
-          </ListGroup.Item>
-          <ListGroup.Item action href="#link4">
-          Change Car Color
-        </ListGroup.Item></>
-            }
-              
+              {organization === "Org1" ? (
+                <>
+                  <ListGroup.Item action href="#link2">
+                    Create Car
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link3">
+                    Transfer Ownership
+                  </ListGroup.Item>
+                </>
+              ) : (
+                <>
+                  <ListGroup.Item action href="#link3">
+                    Transfer Ownership
+                  </ListGroup.Item>
+                  <ListGroup.Item action href="#link4">
+                    Change Car Color
+                  </ListGroup.Item>
+                </>
+              )}
             </ListGroup>
           </Col>
         </Row>

@@ -264,7 +264,7 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 }
 func (s *SmartContract) changeCarColor(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 2 {
+	if len(args) != 3 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
@@ -285,6 +285,7 @@ func (s *SmartContract) changeCarColor(APIstub shim.ChaincodeStubInterface, args
 
 	// add new record
 	car.Colour = args[1]
+	car.CarPic = args[2]
 
 	carAsBytes, _ = json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
