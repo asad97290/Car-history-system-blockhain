@@ -15,7 +15,7 @@ function Data() {
   const [token, setToken] = useState(() =>
     JSON.parse(localStorage.getItem("token"))
   );
-
+  const [pageUrl, setPageUrl] = useState("");
   const [email, setEmail] = useState(() => localStorage.getItem("email"));
 
   const [organization, setOrganization] = useState(() =>
@@ -39,12 +39,12 @@ function Data() {
   const [cars, setCars] = useState([]);
   const data = {};
   const [selectedFile, setSelectedFile] = useState({ selected: null });
+
   useEffect(() => {
     axios.get(url2, conf).then((response) => {
       setCars(response.data.result);
     });
-  }, []);
-  
+  }, [pageUrl]);
 
   const singleFileChangedHandler = (event) => {
     setSelectedFile({
@@ -81,20 +81,16 @@ function Data() {
               }
             } else {
               // Success
-              if(window.location.hash == "#link2"){
-
-             
-              createCarAsset(event, response.data.location);
-              document.getElementById("vin").value = "";
-              document.getElementById("make").value = "";
-              document.getElementById("model").value = "";
-              document.getElementById("color").value = "";
-              document.getElementById("carImage").value = "";
-              document.getElementById("year").value = "";
-              }
-              else if(window.location.hash == "#link4"){
-                console.log(response.data.location)
-                changeCarColour(event,response.data.location)
+              if (window.location.hash === "#link2") {
+                createCarAsset(event, response.data.location);
+                document.getElementById("vin").value = "";
+                document.getElementById("make").value = "";
+                document.getElementById("model").value = "";
+                document.getElementById("color").value = "";
+                document.getElementById("carImage").value = "";
+                document.getElementById("year").value = "";
+              } else if (window.location.hash === "#link4") {
+                changeCarColour(event, response.data.location);
                 document.getElementById("carVin").value = "";
                 document.getElementById("color").value = "";
                 document.getElementById("carImg").value = "";
@@ -112,6 +108,7 @@ function Data() {
   }
   function transferOwnership(event) {
     event.preventDefault();
+
     const formData = new FormData(event.target);
     const args = [];
     for (let key of formData.keys()) {
@@ -128,7 +125,7 @@ function Data() {
     document.getElementById("carOwner").value = "";
   }
 
-  function changeCarColour(event,loc) {
+  function changeCarColour(event, loc) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const args = [];
@@ -146,7 +143,6 @@ function Data() {
     axios.post(url, data, conf).then(function (response) {
       alert("Success");
     });
-
   }
 
   function createCarAsset(event, loc) {
@@ -179,33 +175,6 @@ function Data() {
 
   return (
     <Container className="mb-5">
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Success
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">Transaction Executed Successfully</div>
-          </div>
-        </div>
-      </div>
       <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
         <Row>
           <Col sm={8}>
@@ -407,7 +376,6 @@ function Data() {
                     variant="primary"
                     type="submit"
                     className="w-100 mt-2 btn-danger"
-                 
                   >
                     Submit
                   </Button>
@@ -423,7 +391,11 @@ function Data() {
             </h6>
             <br />
             <ListGroup>
-              <ListGroup.Item action href="#link1">
+              <ListGroup.Item
+                action
+                href="#link1"
+                onClick={() => setPageUrl(window.location.href)}
+              >
                 My Car(s)
               </ListGroup.Item>
               {organization === "Org1" ? (

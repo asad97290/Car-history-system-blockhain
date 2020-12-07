@@ -24,15 +24,13 @@ fabcar.tar.gz
 artifacts/src/chaincode/vendor
 artifacts/src/chaincode/go.sum
 
-channel-artifacts/mychannel.block
+channel-artifacts/*
 log.txt
-Frontend/api/org1-wallet
-Frontend/api/org2-wallet
-artifacts/channel/fabric-ca
-artifacts/channel/crypto-config
+artifacts/channel/fabric-ca/*
+artifacts/channel/crypto-config/*
 
-Frontend/api/node_modules
-Frontend/client/node_modules
+api/node_modules/*
+client/node_modules/*
 
-/api/org1-wallet/*
-/api/org2-wallet/*
+api/org1-wallet/*
+api/org2-wallet/*

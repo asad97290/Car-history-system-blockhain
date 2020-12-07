@@ -49,8 +49,8 @@ createChannel(){
 }
 
 removeOldCrypto(){
-    rm -rf ./Frontend/api/org1-wallet/*
-    rm -rf ./Frontend/api/org2-wallet/*
+    rm -rf ./api/org1-wallet/*
+    rm -rf ./api/org2-wallet/*
 }
 
 

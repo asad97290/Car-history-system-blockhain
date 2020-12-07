@@ -63,10 +63,7 @@ function Body() {
                             SEARCH
                         </Button>
                     </Form>
-                                    {/* <input  onChange={handleOnChange} className="form-control my-0 bg-light py-1 amber-border text-center" type="text" placeholder="ENTER VIN NUMBER"
-                                        aria-label="Search" id="search" minLength={17} maxLength={17}/>
-                                    <button className="btn btn-danger text-white w-100 mt-3 font-weight-bold" >SEARCH</button> */}
-                                </div>
+                              </div>
                             </div>
                         </div>
                     </div>

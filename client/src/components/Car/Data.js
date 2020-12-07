@@ -133,8 +133,7 @@ function Data() {
                                 style={{ color: "#DC3545" }}
                               >
                                 {" "}
-                                {carInfo.Timestamp}
-                                {/* {new Date(carInfo.Timestamp).toString()} */}
+                                {new Date(carInfo.Timestamp).toDateString()}
                                 {" "}
                               </a>
                               <p>
