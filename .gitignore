@@ -20,12 +20,12 @@ artifacts/channel/Org1MSPanchors.tx
 artifacts/channel/Org2MSPanchors.tx
 
 
-fabcar.tar.gz
+*.tar.gz
 artifacts/src/chaincode/vendor
 artifacts/src/chaincode/go.sum
 
 channel-artifacts/*
-log.txt
+*.txt
 artifacts/channel/fabric-ca/*
 artifacts/channel/crypto-config/*
 
