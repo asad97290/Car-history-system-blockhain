@@ -140,9 +140,12 @@ function Data() {
     data["args"] = args;
     console.log("Color ===> ", data["args"][2]);
 
-    axios.post(url, data, conf).then(function (response) {
+    axios.post(url, data, conf).then((response)=> {
       alert("Success");
     });
+    document.getElementById("car_vin").value = "";
+    document.getElementById("carColor").value = "";
+    document.getElementById("carImg").value = "";
   }
 
   function createCarAsset(event, loc) {
@@ -344,7 +347,7 @@ function Data() {
                     <Form.Label>VIN *</Form.Label>
                     <Form.Control
                       type="text"
-                      id="carVin"
+                      id="car_vin"
                       placeholder="Enter Your VIN Here"
                       required
                       name="vin"
@@ -356,7 +359,7 @@ function Data() {
                     <Form.Label>Color *</Form.Label>
                     <Form.Control
                       type="color"
-                      id="Colour"
+                      id="carColor"
                       required
                       name="Colour"
                     />
