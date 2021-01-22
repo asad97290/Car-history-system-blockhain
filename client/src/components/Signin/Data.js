@@ -18,10 +18,10 @@ function Data() {
     reader.readAsText(e.target.files[0])
 }
     const login = () => {
-        let userEmail = document.getElementById("file1").value.slice(12, -7)
+        let userCnic = document.getElementById("file1").value.slice(12, -7)
         let orgName = document.getElementById("file1").value.slice(-7, -3)
         let data = {
-            userEmail,
+            userCnic,
             orgName,
             certificate:cert
         }
@@ -29,9 +29,9 @@ function Data() {
 
             if (response.data.success) {
                 localStorage.setItem("token",JSON.stringify(response.data.message.token))
-                localStorage.setItem("email",userEmail)
+                localStorage.setItem("cnic",userCnic)
                 localStorage.setItem("organization",orgName)
-                window.location.pathname = "/profile/" + userEmail 
+                window.location.pathname = "/profile/" + userCnic 
 
             }
             else if (response.data.success === false) {

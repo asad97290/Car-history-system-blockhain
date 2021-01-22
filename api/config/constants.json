@@ -7,7 +7,7 @@
     "eventWaitTime": "30000",
     "admins": [
         {
-            "userEmail": "admin",
+            "userCnic": "admin",
             "secret": "adminpw"
         }
     ]

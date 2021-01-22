@@ -20,7 +20,7 @@ function Routes() {
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/signup" component={Signup} />
           <Route path="/car/:vin" component={Car} />
-          <Route path="/profile/:email" component={Profile} />
+          <Route path="/profile/:cnic" component={Profile} />
           <Route path="*" component={() => <h2>Page Not Found</h2>} />
         </Switch>
       </Router>

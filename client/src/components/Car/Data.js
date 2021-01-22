@@ -109,10 +109,10 @@ function Data() {
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          <p className="text-secondary">Owner</p>
+                          <p className="text-secondary">Owner CNIC</p>
                         </div>
                         <div className="col-6 d-flex">
-                          <p className="h6" id="ownerEmail"> {car.ownerEmail} </p><i onClick={()=>copyText('ownerEmail')}className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+                          <p className="h6" id="ownerCnic"> {car.ownerCnic} </p><i onClick={()=>copyText('ownerCnic')}className="fa fa-clipboard mx-2" aria-hidden="true"></i>
                         </div>
                       </div>
                     </div>
@@ -126,20 +126,20 @@ function Data() {
                           return (
                             <li key={index}>
                               <a style={{ color: "#DC3545" }}>
-                                Transaction ID: {carInfo.TxId}{" "}
+                                Transaction ID: {carInfo.TxId.slice(0,40)}{" "}
                               </a>
                               <a
                                 className="float-right"
                                 style={{ color: "#DC3545" }}
                               >
                                 {" "}
-                                {new Date(carInfo.Timestamp).toDateString()}
+                                {new Date(carInfo.Timestamp).toString()}
                                 {" "}
                               </a>
                               <p>
                                 VIN: {carInfo.Value.vin}
                                 <br />
-                                Email: {carInfo.Value.ownerEmail}
+                                CNIC: {carInfo.Value.ownerCnic}
                                 <br />
                                 Model: {carInfo.Value.make}{" "}
                                 {carInfo.Value.model}

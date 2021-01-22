@@ -25,8 +25,7 @@ function Data(props) {
                                     <dd className="col-6">3 Feb, 2020</dd>
                                     <dt className="col-6">Major Stakeholder</dt>
                                     <dd className="col-6">SSUET</dd>
-                                    <dt className="col-6">Last Year's Turnover</dt>
-                                    <dd className="col-6">$1,250,375</dd>
+                                    
                                     <dt className="col-6">Employees</dt>
                                     <dd className="col-6">4</dd>
                                 </dl>

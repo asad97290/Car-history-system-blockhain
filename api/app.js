@@ -69,12 +69,12 @@ app.use((req, res, next) => {
       });
       return;
     } else {
-      req.userEmail = decoded.userEmail;
+      req.userCnic = decoded.userCnic;
       req.orgname = decoded.orgName;
       logger.debug(
         util.format(
-          "Decoded from JWT token: userEmail - %s, orgname - %s",
-          decoded.userEmail,
+          "Decoded from JWT token: userCnic - %s, orgname - %s",
+          decoded.userCnic,
           decoded.orgName
         )
       );
@@ -139,15 +139,17 @@ const profileImgUpload = multer({
   },
 }).single("profileImage");
 
+
+
 // Register and enroll user
 app.post("/users", async function (req, res) {
-  var userEmail = req.body.userEmail;
+  var userCnic = req.body.userCnic;
   var orgName = req.body.orgName;
   logger.debug("End point : /users");
-  logger.debug("User name : " + userEmail);
+  logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
-  if (!userEmail) {
-    res.json(getErrorMessage("'userEmail'"));
+  if (!userCnic) {
+    res.json(getErrorMessage("'userCnic'"));
     return;
   }
   if (!orgName) {
@@ -156,24 +158,24 @@ app.post("/users", async function (req, res) {
   }
 
 
-  let response = await helper.getRegisteredUser(userEmail, orgName, true);
+  let response = await helper.getRegisteredUser(userCnic, orgName, true);
 
   logger.debug(
-    "-- returned from registering the userEmail %s for organization %s",
-    userEmail,
+    "-- returned from registering the userCnic %s for organization %s",
+    userCnic,
     orgName
   );
   if (response && typeof response !== "string") {
     logger.debug(
-      "Successfully registered the userEmail %s for organization %s",
-      userEmail,
+      "Successfully registered the userCnic %s for organization %s",
+      userCnic,
       orgName
     );
     res.json(response);
   } else {
     logger.debug(
-      "Failed to register the userEmail %s for organization %s with::%s",
-      userEmail,
+      "Failed to register the userCnic %s for organization %s with::%s",
+      userCnic,
       orgName,
       response
     );
@@ -183,15 +185,15 @@ app.post("/users", async function (req, res) {
 
 // Login and get jwt
 app.post("/users/login", async function (req, res) {
-  var userEmail = req.body.userEmail;
+  var userCnic = req.body.userCnic;
   var orgName = req.body.orgName;
   var certificate = req.body.certificate;
   logger.debug("End point : /users");
-  logger.debug("User name : " + userEmail);
+  logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
   logger.debug("certificate  : " + certificate);
-  if (!userEmail) {
-    res.json(getErrorMessage("'userEmail'"));
+  if (!userCnic) {
+    res.json(getErrorMessage("'userCnic'"));
     return;
   }
   if (!orgName) {
@@ -206,14 +208,14 @@ app.post("/users/login", async function (req, res) {
   var token = jwt.sign(
     {
       exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
-      userEmail: userEmail,
+      userCnic: userCnic,
       orgName: orgName,
     },
     app.get("secret")
   );
 
   let isUserRegistered = await helper.isUserRegistered(
-    userEmail,
+    userCnic,
     orgName,
     certificate
   );
@@ -223,7 +225,7 @@ app.post("/users/login", async function (req, res) {
   } else {
     res.json({
       success: false,
-      message: `User with userEmail ${userEmail} is not registered with ${orgName}, Please register first.`,
+      message: `User with userCnic ${userCnic} is not registered with ${orgName}, Please register first.`,
     });
   }
 });
@@ -265,7 +267,7 @@ app.post("/channels/:channelName/chaincodes/:chaincodeName",
         chaincodeName,
         fcn,
         args,
-        req.userEmail,
+        req.userCnic,
         req.orgname
       );
       console.log(`message result is : ${message}`);
@@ -332,15 +334,11 @@ app.get("/channels/:channelName/chaincodes/:chaincodeName",
         chaincodeName,
         args,
         fcn,
-        req.userEmail,
+        req.userCnic,
         req.orgname
       );
-      const response_payload = {
-        result: message,
-        error: null,
-        errorData: null,
-      };
-      res.send(response_payload);
+      
+      res.send(message);
     } catch (error) {
       const response_payload = {
         result: null,
@@ -355,8 +353,7 @@ app.get("/channels/:channelName/chaincodes/:chaincodeName",
 //post car pics to aws s3
 app.post("/profile-img-upload", (req, res) => {
   profileImgUpload(req, res, (error) => {
-    console.log("request Okokok", req.file);
-    console.log("error", error);
+    console.log("request Ok", req.file);
     if (error) {
       console.log("errors", error);
       res.json({ error: error });
@@ -377,4 +374,3 @@ app.post("/profile-img-upload", (req, res) => {
     }
   });
 });
-

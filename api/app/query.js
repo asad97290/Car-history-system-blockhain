@@ -6,7 +6,7 @@ const logger = log4js.getLogger('BasicNetwork');
 const util = require('util')
 
 const helper = require('./helper')
-const query = async (channelName, chaincodeName, args, fcn, userEmail, org_name) => {
+const query = async (channelName, chaincodeName, args, fcn, userCnic, org_name) => {
 
     try {
         const ccp = await helper.getCCP(org_name)
@@ -17,11 +17,11 @@ const query = async (channelName, chaincodeName, args, fcn, userEmail, org_name)
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
-        let identity = await wallet.get(userEmail);
+        let identity = await wallet.get(userCnic);
         if (!identity) {
-            console.log(`An identity for the user ${userEmail} does not exist in the wallet, so registering user`);
-            await helper.getRegisteredUser(userEmail, org_name, true)
-            identity = await wallet.get(userEmail);
+            console.log(`An identity for the user ${userCnic} does not exist in the wallet, so registering user`);
+            await helper.getRegisteredUser(userCnic, org_name, true)
+            identity = await wallet.get(userCnic);
             console.log('Run the registerUser.js application before retrying');
             return;
         }
@@ -29,7 +29,7 @@ const query = async (channelName, chaincodeName, args, fcn, userEmail, org_name)
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccp, {
-            wallet, identity: userEmail, discovery: { enabled: true, asLocalhost: true }
+            wallet, identity: userCnic, discovery: { enabled: true, asLocalhost: true }
         });
 
         // Get the network (channel) our contract is deployed to.
@@ -43,14 +43,24 @@ const query = async (channelName, chaincodeName, args, fcn, userEmail, org_name)
             result = await contract.evaluateTransaction(fcn, args[0]);
         } 
         
-        console.log(result)
         console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
         result = JSON.parse(result.toString());
-        return result
+        const _result = {
+            result,
+            error: null,
+            errorData:null
+        }
+        return _result
     } catch (error) {
         console.error(`Failed to evaluate transaction: ${error}`);
-        return error.message
+        
+        const result = {
+            result: error.message,
+            error: true,
+            errorData: error
+        }
+        return result 
 
     }
 }
