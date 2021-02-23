@@ -8,6 +8,7 @@ import Signin from "../components/Signin";
 import Signup from "../components/Signup";
 import Car from "../components/Car";
 import Profile from "../components/Profile";
+import QrReader from "../components/QrReader";
 
 function Routes() {
   return (
@@ -20,6 +21,7 @@ function Routes() {
           <Route exact path="/signin" component={Signin} />
           <Route exact path="/signup" component={Signup} />
           <Route path="/car/:vin" component={Car} />
+          <Route path="/qrReader" component={QrReader} />
           <Route path="/profile/:cnic" component={Profile} />
           <Route path="*" component={() => <h2>Page Not Found</h2>} />
         </Switch>

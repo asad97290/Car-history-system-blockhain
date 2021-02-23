@@ -38,6 +38,8 @@ function Data() {
                 alert ("Wrong Certificate")
             }
              
+        }).catch((err)=> {
+            alert(err)
         })
     }
 

@@ -24,6 +24,7 @@ type Car struct {
 	Colour string `json:"colour"`
 	OwnerCnic string `json:"ownerCnic"`
 	CarPic  string `json:"carPic"`
+	Status  string `json:"status"`
 }
 
 // Init ;  Method for initializing smart contract
@@ -35,8 +36,8 @@ var logger = flogging.MustGetLogger("fabcar_cc")
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	cars := []Car{
-		Car{VIN: "4Y1SL65848Z411439", Year:"2018", Make: "Toyota", Model: "Corolla", Colour: "white",  OwnerCnic:"42101-2696589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg"},
-		Car{VIN: "9X1SL65848Z411439", Year:"2016", Make: "Audi", Model: "R8", Colour: "white", OwnerCnic:"42101-1196589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/audi.jpg"},
+		Car{VIN: "4Y1SL65848Z411439", Year:"2018", Make: "Toyota", Model: "Corolla", Colour: "white",  OwnerCnic:"42101-2696589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg",Status:"created"},
+		Car{VIN: "9X1SL65848Z411439", Year:"2016", Make: "Audi", Model: "R8", Colour: "white", OwnerCnic:"42101-1196589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/audi.jpg",Status:"created"},
 	}
 
 	i := 0
@@ -94,9 +95,9 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 7 {
-		return shim.Error("Incorrect number of arguments. Expecting 8")
+		return shim.Error("Incorrect number of arguments. Expecting 7")
 	}
-	var car = Car{VIN: args[0], Year: args[1], Make: args[2], Model: args[3], Colour: args[4], OwnerCnic: args[5], CarPic:args[6]}
+	var car = Car{VIN: args[0], Year: args[1], Make: args[2], Model: args[3], Colour: args[4], OwnerCnic: args[5], CarPic:args[6],Status:"created"}
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
@@ -252,6 +253,7 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 
 	// add new record
 	car.OwnerCnic = args[1]
+	car.Status = "transfered"
 
 	carAsBytes, _ = json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)

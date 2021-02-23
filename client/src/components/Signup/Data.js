@@ -38,7 +38,7 @@ function Data() {
             else{
                 alert(response.data.message)
             }
-            }).catch(function (error) { console.log(error); });  
+            }).catch(function (error) { alert(error); });  
       
     }
 

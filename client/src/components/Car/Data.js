@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import QRCode from 'qrcode'
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
@@ -21,15 +22,20 @@ function Data() {
       "Content-Type": "application/json",
     },
   };
-  useEffect(() => {
-    async function fetchData() {
+  useEffect(async () => {
       const response = await axios.get(url1, conf);
       setCar(() => response.data.result);
       const response2 = await axios.get(url2, conf);
       setCarHistory(() => response2.data.result);
-    }
-    fetchData();
+      const canvas = await QRCode.toCanvas(response.data.result.vin, { errorCorrectionLevel: 'H' })
+      var container = document.getElementById('qrcode')
+      container.appendChild(canvas)
+
   }, []);
+
+       
+
+
   
   function copyText(id) {
     var text = document.getElementById(id).innerText;
@@ -133,7 +139,7 @@ function Data() {
                                 style={{ color: "#DC3545" }}
                               >
                                 {" "}
-                                {new Date(carInfo.Timestamp).toString()}
+                                {new Date(carInfo.Timestamp).toLocaleString()}
                                 {" "}
                               </a>
                               <p>
@@ -141,17 +147,19 @@ function Data() {
                                 <br />
                                 CNIC: {carInfo.Value.ownerCnic}
                                 <br />
-                                Model: {carInfo.Value.make}{" "}
-                                {carInfo.Value.model}
-                                {carInfo.Value.year}
+                                Status: <span style={{ color: "white",background:"black",padding:"2px",borderRadius:"7px"}}>{carInfo.Value.status}</span>
                                 <br />
-                                <div className="d-flex">
-                                Color:&nbsp;<p style={{border: "1px solid black", width: "60px", height: "20px", backgroundColor: carInfo.Value.colour}}></p></div>
+                                Model: {carInfo.Value.make}{" "}
+                                {carInfo.Value.model}{" "}
+                                {carInfo.Value.year}
+                                
                               </p>
                             </li>
                           );
                         })}
                       </ul>
+                      <h3>QR code:</h3>
+                      <div id="qrcode"></div>
                     </div>
                   </div>
                 </div>

@@ -81,7 +81,7 @@ function Data() {
               }
             } else {
               // Success
-                 
+
               createCarAsset(event, response.data.location);
               document.getElementById("vin").value = "";
               document.getElementById("make").value = "";
@@ -104,14 +104,13 @@ function Data() {
   async function checkCar(vin) {
     const url3 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
     const response = await axios.get(url3, conf);
-    if(response.data.error){
+    if (response.data.error) {
       return true;
     }
     if (response.data.result.vin === vin) {
       alert("Vin already taken. type correct vin");
       return false;
     }
-    
   }
 
   function transferOwnership(event) {
@@ -135,7 +134,7 @@ function Data() {
         data["channelName"] = "mychannel";
         data["args"] = args;
         axios.post(url, data, conf).then(function (response) {
-          alert("Success");
+          alert("Successfully transfered car asset");
         });
 
         document.getElementById("carVin").value = "";
@@ -164,10 +163,10 @@ function Data() {
       data["chaincodeName"] = "fabcar";
       data["channelName"] = "mychannel";
       data["args"] = args;
-  
+
       axios
         .post(url, data, conf)
-        .then(alert("Success"))
+        .then(alert("Success car asset created"))
         .catch((error) => {
           alert("Something Went Wrong! Try Again.");
         });
@@ -175,9 +174,8 @@ function Data() {
       document.getElementById("color").value = "";
       document.getElementById("make").value = "";
       document.getElementById("model").value = "";
-      document.getElementById("year").value = "";  
+      document.getElementById("year").value = "";
     }
-    
   }
 
   return (
@@ -206,6 +204,7 @@ function Data() {
                               <h5 className="card-title text-dark font-weight-bold">
                                 {car.make} {car.model} {car.year}
                               </h5>
+
                               <Link
                                 to={"/car/" + car.vin}
                                 className="btn btn-danger"
@@ -247,7 +246,6 @@ function Data() {
                       required
                       id="year"
                       name="year"
-                    
                     />
                   </Form.Group>
                   <Form.Group>
