@@ -26,7 +26,7 @@ function Data() {
     window.location.pathname = "/signin";
   }
 
-  const url = "http://localhost:4000/channels/mychannel/chaincodes/fabcar";
+  const url = "https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar";
   const url2 = url + `?args=["${cnic}"]&fcn=queryCarsByOwner`;
 
   let conf = {
@@ -62,7 +62,7 @@ function Data() {
         selectedFile.selected.name
       );
       axios
-        .post("http://localhost:4000/profile-img-upload", data, {
+        .post("https://192.168.0.111:4000/profile-img-upload", data, {
           headers: {
             accept: "application/json",
             "Accept-Language": "en-US,en;q=0.8",
@@ -102,7 +102,7 @@ function Data() {
   }
 
   async function checkCar(vin) {
-    const url3 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+    const url3 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
     const response = await axios.get(url3, conf);
     if (response.data.error) {
       return true;

@@ -7,15 +7,16 @@ function Data() {
   const [ token,setToken ] = useState( ()=>JSON.parse(localStorage.getItem("token")))
   const [car, setCar] = useState({});
   const [carHistory, setCarHistory] = useState([]);
-  
+  const [url, setImageURL] = useState("");
+
   if (!token) {
     window.location.pathname = "/signin"
   }
 
   const { vin } = useParams();
 
-  const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
-  const url2 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+  const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+  const url2 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -27,10 +28,11 @@ function Data() {
       setCar(() => response.data.result);
       const response2 = await axios.get(url2, conf);
       setCarHistory(() => response2.data.result);
-      const canvas = await QRCode.toCanvas(response.data.result.vin, { errorCorrectionLevel: 'H' })
-      var container = document.getElementById('qrcode')
-      container.appendChild(canvas)
-
+      // const canvas = await QRCode.toCanvas(response.data.result.vin, { errorCorrectionLevel: 'H' })
+      // var container = document.getElementById('qrcode')
+      // container.appendChild(canvas)
+      const url = await QRCode.toDataURL(vin);
+      setImageURL(url)
   }, []);
 
        
@@ -159,7 +161,7 @@ function Data() {
                         })}
                       </ul>
                       <h3>QR code:</h3>
-                      <div id="qrcode"></div>
+                      <img src={url} alt="car QR code"/>
                     </div>
                   </div>
                 </div>

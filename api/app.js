@@ -1,8 +1,6 @@
 "use strict";
 const log4js = require("log4js");
 const logger = log4js.getLogger("BasicNetwork");
-const bodyParser = require("body-parser");
-const http = require("http");
 const util = require("util");
 const express = require("express");
 const app = express();
@@ -15,22 +13,23 @@ const jwt = require("jsonwebtoken");
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 const constants = require("./config/constants.json");
+const https = require('https'); 
+const fs = require('fs');
 
 
-
-
-const host = process.env.HOST || constants.host;
+// const host = process.env.HOST || constants.host;
 const port = process.env.PORT || constants.port;
 
 const helper = require("./app/helper");
 const invoke = require("./app/invoke");
 const query = require("./app/query");
 
-app.options("*", cors());
+app.options("https://192.168.0.111:3000", cors());
 app.use(cors());
-app.use(bodyParser.json());
+
+app.use(express.json());
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     extended: false,
   })
 );
@@ -83,13 +82,22 @@ app.use((req, res, next) => {
   });
 });
 
-var server = http.createServer(app).listen(port, function () {
-  console.log(`Server started on ${port}`);
-});
+// var server = http.createServer(app).listen(port, function () {
+//   console.log(`Server started on ${port}`);
+// });
 
-logger.info("****************** SERVER STARTED ************************");
-logger.info("***************  http://%s:%s  ******************", host, port);
-server.timeout = 240000;
+// logger.info("****************** SERVER STARTED ************************");
+// logger.info("***************  http://%s:%s  ******************", host, port);
+// server.timeout = 240000;
+
+
+https.createServer({ key: fs.readFileSync('./asad.key'), cert: fs.readFileSync('./asad.crt'), }, app) .listen(port,()=>{
+    console.log(`Server started on  ${port}`);
+}); 
+
+
+
+
 
 function getErrorMessage(field) {
   var response = {

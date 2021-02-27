@@ -16,7 +16,7 @@ export default function Data() {
     };
   
     const handleSubmit = (qr) => {
-        const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${qr}"]&fcn=getHistoryForAsset`;
+        const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${qr}"]&fcn=getHistoryForAsset`;
     
       if (token) {
         axios.get(url1, conf).then((response) => {
@@ -37,7 +37,7 @@ export default function Data() {
     
     const handleScan = (result)=>{
         if(result){
-            axios.get(`http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${result}"]&fcn=getHistoryForAsset`, conf).then((response) => {
+            axios.get(`https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${result}"]&fcn=getHistoryForAsset`, conf).then((response) => {
                 if (response.data.result.length === 0) {
                     alert("Invalid VIN Number");
                   } else {

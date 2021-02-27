@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Form} from 'react-bootstrap';
 
 function Data() {
-    const url = "http://localhost:4000/users";
+    const url = "https://192.168.0.111:4000/users";
     let conf = {
         headers: {
             "Content-Type": "application/json"
@@ -38,7 +38,7 @@ function Data() {
             else{
                 alert(response.data.message)
             }
-            }).catch(function (error) { alert(error); });  
+            }).catch(function (error) { alert("-------",error); });  
       
     }
 

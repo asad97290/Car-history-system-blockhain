@@ -37,3 +37,7 @@ api/org2-wallet/*
 
 log.txt
 fabcar.tar.gz
+
+
+api/asad.crt
+api/asad.key
