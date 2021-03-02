@@ -31,7 +31,7 @@ function NavigationBar(props) {
         <Link to="/"><Navbar.Brand href="/">
           <img src={logo} height="50" alt="Car Lifecycle Blockchain Network" />
         </Navbar.Brand></Link>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Toggle style={{backgroundColor:"#dc3545"}} aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto" activeKey={props.path}>
             <Link to="/"><Nav.Link href="/" className="mx-1 navList text-dark">
