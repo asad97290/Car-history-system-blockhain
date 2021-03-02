@@ -16,7 +16,7 @@ function Data() {
     JSON.parse(localStorage.getItem("token"))
   );
   const [pageUrl, setPageUrl] = useState("");
-  const [email, setEmail] = useState(() => localStorage.getItem("email"));
+  const [cnic, setCnic] = useState(() => localStorage.getItem("cnic"));
 
   const [organization, setOrganization] = useState(() =>
     localStorage.getItem("organization")
@@ -26,8 +26,8 @@ function Data() {
     window.location.pathname = "/signin";
   }
 
-  const url = "http://localhost:4000/channels/mychannel/chaincodes/fabcar";
-  const url2 = url + `?args=["${email}"]&fcn=queryCarsByOwner`;
+  const url = "https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar";
+  const url2 = url + `?args=["${cnic}"]&fcn=queryCarsByOwner`;
 
   let conf = {
     headers: {
@@ -62,7 +62,7 @@ function Data() {
         selectedFile.selected.name
       );
       axios
-        .post("http://localhost:4000/profile-img-upload", data, {
+        .post("https://192.168.0.111:4000/profile-img-upload", data, {
           headers: {
             accept: "application/json",
             "Accept-Language": "en-US,en;q=0.8",
@@ -81,20 +81,14 @@ function Data() {
               }
             } else {
               // Success
-              if (window.location.hash === "#link2") {
-                createCarAsset(event, response.data.location);
-                document.getElementById("vin").value = "";
-                document.getElementById("make").value = "";
-                document.getElementById("model").value = "";
-                document.getElementById("color").value = "";
-                document.getElementById("carImage").value = "";
-                document.getElementById("year").value = "";
-              } else if (window.location.hash === "#link4") {
-                changeCarColour(event, response.data.location);
-                document.getElementById("carVin").value = "";
-                document.getElementById("color").value = "";
-                document.getElementById("carImg").value = "";
-              }
+
+              createCarAsset(event, response.data.location);
+              document.getElementById("vin").value = "";
+              document.getElementById("make").value = "";
+              document.getElementById("model").value = "";
+              document.getElementById("color").value = "";
+              document.getElementById("carImage").value = "";
+              document.getElementById("year").value = "";
             }
           }
         })
@@ -106,78 +100,90 @@ function Data() {
       alert("Please upload file");
     }
   }
+
+  async function checkCar(vin) {
+    const url3 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+    const response = await axios.get(url3, conf);
+    if (response.data.error) {
+      return true;
+    }
+    if (response.data.result.vin === vin) {
+      alert("Vin already taken. type correct vin");
+      return false;
+    }
+  }
+
   function transferOwnership(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const args = [];
+    let counter = 0;
     for (let key of formData.keys()) {
       args.push(formData.get(key));
     }
-    data["fcn"] = "changeCarOwner";
-    data["chaincodeName"] = "fabcar";
-    data["channelName"] = "mychannel";
-    data["args"] = args;
-    axios.post(url, data, conf).then(function (response) {
-      alert("Success");
+    if (cars.length === 0) {
+      alert("you don't have cars to transfer");
+      return;
+    }
+    cars.forEach((car, index) => {
+      if (car.vin === args[0]) {
+        counter = counter + 1;
+        data["fcn"] = "changeCarOwner";
+        data["chaincodeName"] = "fabcar";
+        data["channelName"] = "mychannel";
+        data["args"] = args;
+        axios.post(url, data, conf).then(function (response) {
+          alert("Successfully transfered car asset");
+        });
+
+        document.getElementById("carVin").value = "";
+        document.getElementById("carOwner").value = "";
+        return;
+      }
     });
-    document.getElementById("carVin").value = "";
-    document.getElementById("carOwner").value = "";
+    if (counter === 0) {
+      alert("Wrong vin number");
+      return;
+    }
   }
 
-  function changeCarColour(event, loc) {
+  async function createCarAsset(event, loc) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const args = [];
     for (let key of formData.keys()) {
       args.push(formData.get(key));
     }
-    args.pop();
-    args.push(loc);
-    data["fcn"] = "changeCarColor";
-    data["chaincodeName"] = "fabcar";
-    data["channelName"] = "mychannel";
-    data["args"] = args;
-    console.log("Color ===> ", data["args"][2]);
+    if (await checkCar(args[0])) {
+      args.pop();
+      args.push(cnic);
+      args.push(loc);
+      data["fcn"] = "createCar";
+      data["chaincodeName"] = "fabcar";
+      data["channelName"] = "mychannel";
+      data["args"] = args;
 
-    axios.post(url, data, conf).then((response)=> {
-      alert("Success");
-    });
-    document.getElementById("car_vin").value = "";
-    document.getElementById("carColor").value = "";
-    document.getElementById("carImg").value = "";
-  }
-
-  function createCarAsset(event, loc) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const args = [];
-    for (let key of formData.keys()) {
-      args.push(formData.get(key));
+      axios
+        .post(url, data, conf)
+        .then(alert("Success car asset created"))
+        .catch((error) => {
+          alert("Something Went Wrong! Try Again.");
+        });
+      document.getElementById("carVin").value = "";
+      document.getElementById("color").value = "";
+      document.getElementById("make").value = "";
+      document.getElementById("model").value = "";
+      document.getElementById("year").value = "";
     }
-    args.pop();
-    args.push(email);
-    args.push(loc);
-    data["fcn"] = "createCar";
-    data["chaincodeName"] = "fabcar";
-    data["channelName"] = "mychannel";
-    data["args"] = args;
-
-    axios
-      .post(url, data, conf)
-      .then(alert("Success"))
-      .catch((error) => {
-        alert("Something Went Wrong! Try Again.");
-      });
-    document.getElementById("carVin").value = "";
-    document.getElementById("color").value = "";
-    document.getElementById("make").value = "";
-    document.getElementById("model").value = "";
-    document.getElementById("year").value = "";
   }
 
   return (
+<<<<<<< HEAD
     <Container className="my-5">
+=======
+    <Container className="mb-5 pb-5">
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
       <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
         <Row>
           <Col sm={8} className="order-last order-sm-first py-3">
@@ -202,6 +208,7 @@ function Data() {
                               <h5 className="card-title text-dark font-weight-bold">
                                 {car.make} {car.model} {car.year}
                               </h5>
+
                               <Link
                                 to={"/car/" + car.vin}
                                 className="btn btn-danger"
@@ -243,8 +250,6 @@ function Data() {
                       required
                       id="year"
                       name="year"
-                      min="2010"
-                      max="2021"
                     />
                   </Form.Group>
                   <Form.Group>
@@ -318,13 +323,13 @@ function Data() {
                     />
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Email *</Form.Label>
+                    <Form.Label>CNIC *</Form.Label>
                     <Form.Control
                       type="text"
                       id="carOwner"
-                      placeholder="Enter Owner's Name"
+                      placeholder="Enter Owner's Cnic"
                       required
-                      name="ownerEmail"
+                      name="ownerCnic"
                     />
                   </Form.Group>
                   <Button
@@ -337,57 +342,15 @@ function Data() {
                   </Button>
                 </Form>
               </Tab.Pane>
-              <Tab.Pane eventKey="#link4" className="text-center">
-                <h4>Update Car Color</h4>
-                <Form
-                  className="text-left addForm py-4 mb-3"
-                  onSubmit={singleFileUploadHandler}
-                >
-                  <Form.Group>
-                    <Form.Label>VIN *</Form.Label>
-                    <Form.Control
-                      type="text"
-                      id="car_vin"
-                      placeholder="Enter Your VIN Here"
-                      required
-                      name="vin"
-                      minLength="17"
-                      maxLength="17"
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Color *</Form.Label>
-                    <Form.Control
-                      type="color"
-                      id="carColor"
-                      required
-                      name="Colour"
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Image *</Form.Label>
-                    <Form.Control
-                      onChange={singleFileChangedHandler}
-                      type="file"
-                      id="carImg"
-                      placeholder="Upload Image of Car"
-                      required
-                      name="carPic"
-                    />
-                  </Form.Group>
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="w-100 mt-2 btn-danger"
-                  >
-                    Submit
-                  </Button>
-                </Form>
-              </Tab.Pane>
             </Tab.Content>
           </Col>
+<<<<<<< HEAD
           <Col sm={4} className="order-first order-sm-last py-3">
             <h4>Hello, {email} </h4>
+=======
+          <Col sm={4}>
+            <h4>Hello, {cnic} </h4>
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
             <h6>
               Organization:{" "}
               {organization === "Org1" ? "Manufacturer" : "Car Owner"}{" "}
@@ -414,9 +377,6 @@ function Data() {
                 <>
                   <ListGroup.Item action href="#link3">
                     Transfer Ownership
-                  </ListGroup.Item>
-                  <ListGroup.Item action href="#link4">
-                    Change Car Color
                   </ListGroup.Item>
                 </>
               )}

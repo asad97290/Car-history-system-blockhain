@@ -8,7 +8,7 @@ function Body() {
   const [vin, setVin] = useState("");
   const [token, setToken] = useState("");
 
-  const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+  const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,7 +25,6 @@ function Body() {
     event.preventDefault();
     if (token) {
       axios.get(url1, conf).then((response) => {
-        console.log(response.data.result.length);
         if (response.data.result.length === 0) {
           alert("Invalid VIN Number");
         } else {
@@ -92,6 +91,7 @@ function Body() {
                     >
                       SEARCH
                     </Button>
+                    <Link style={{color:"#dc3545"}} to="/qrReader">or Scan QR code</Link>
                   </Form>
                 </div>
               </div>

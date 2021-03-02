@@ -4,16 +4,22 @@ import { Link } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 
 function NavigationBar(props) {
+<<<<<<< HEAD
   const [email, setEmail] = useState(() =>
     localStorage.getItem("email")
   );
+=======
+  const [ cnic,setCnic ] = useState(() =>
+  localStorage.getItem("cnic")
+);
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
   const [flag, setFlag] = useState(() =>
     JSON.parse(localStorage.getItem("token"))
   );
 
   const signOut = () => {
     localStorage.setItem("token", null);
-    localStorage.setItem("email", null);
+    localStorage.setItem("cnic", null);
     localStorage.setItem("organization", null);
     setFlag(false)
     window.location.pathname = "/"
@@ -49,8 +55,8 @@ function NavigationBar(props) {
             </Nav.Link></Link>
             <hr />
             {flag ? (
-              <Link to={`/profile/${email}`}><Nav.Link
-                href={`/profile/${email}`}
+              <Link to={`/profile/${cnic}`}><Nav.Link
+                href={`/profile/${cnic}`}
                 className="mx-1 navList text-dark"
               >
                 <span className="fa fa-address-card fa-lg"></span> Profile

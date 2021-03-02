@@ -3,7 +3,7 @@ import axios from 'axios'
 function Data() {
 
     let cert;
-    const url = "http://localhost:4000/users/login";
+    const url = "https://192.168.0.111:4000/users/login";
     let conf = {
         headers: {
             "Content-Type": "application/json"
@@ -18,26 +18,39 @@ function Data() {
         reader.readAsText(e.target.files[0])
     }
     const login = () => {
-        let userEmail = document.getElementById("file1").value.slice(12, -7)
+        let userCnic = document.getElementById("file1").value.slice(12, -7)
         let orgName = document.getElementById("file1").value.slice(-7, -3)
         let data = {
-            userEmail,
+            userCnic,
             orgName,
             certificate: cert
         }
         axios.post(url, data, conf).then(response => {
 
             if (response.data.success) {
+<<<<<<< HEAD
                 localStorage.setItem("token", JSON.stringify(response.data.message.token))
                 localStorage.setItem("email", userEmail)
                 localStorage.setItem("organization", orgName)
                 window.location.pathname = "/profile/" + userEmail
+=======
+                localStorage.setItem("token",JSON.stringify(response.data.message.token))
+                localStorage.setItem("cnic",userCnic)
+                localStorage.setItem("organization",orgName)
+                window.location.pathname = "/profile/" + userCnic 
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
 
             }
             else if (response.data.success === false) {
                 alert("Wrong Certificate")
             }
+<<<<<<< HEAD
 
+=======
+             
+        }).catch((err)=> {
+            alert(err)
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
         })
     }
 

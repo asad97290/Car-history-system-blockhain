@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Form} from 'react-bootstrap';
 
 function Data() {
-    const url = "http://localhost:4000/users";
+    const url = "https://192.168.0.111:4000/users";
     let conf = {
         headers: {
             "Content-Type": "application/json"
@@ -22,23 +22,23 @@ function Data() {
         axios.post(url, data, conf
         	).then(function (response) { 
             if(response.data.success){
-                var email = document.getElementById("userEmail").value
+                var cnic = document.getElementById("userCnic").value
                 var orgName = document.getElementById("orgName").value
                 var text = response.data.x509Identity.credentials.certificate
                 text = JSON.stringify(text)
                 const element = document.createElement("a");
                 const file = new Blob([text], {type: 'application/json'});
                 element.href = URL.createObjectURL(file);
-                element.download = `${email}${orgName}.id`;
+                element.download = `${cnic}${orgName}.id`;
                 document.body.appendChild(element);
                 element.click();
-                document.getElementById("userEmail").value = "";
+                document.getElementById("userCnic").value = "";
                 document.getElementById("orgName").value = "";
             }
             else{
                 alert(response.data.message)
             }
-            }).catch(function (error) { console.log(error); });  
+            }).catch(function (error) { alert("-------",error); });  
       
     }
 
@@ -49,8 +49,9 @@ function Data() {
                     <h2>Organization Registration Form</h2>
                     <Form className="text-left addForm p-4 mb-3" onSubmit={handleSubmit}>
                         <Form.Group>
-                            <Form.Label>Email *</Form.Label>
-                            <Form.Control id="userEmail" type="email" placeholder="Enter Your Email Here" required name="userEmail" />
+                            <Form.Label>CNIC *</Form.Label>
+                            <Form.Control id="userCnic" type="text" placeholder="Enter Your CNIC Here" required name="userCnic" minLength="13"
+                      maxLength="13"/>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>Organization *</Form.Label>

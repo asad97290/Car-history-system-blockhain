@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strconv"
 	"time"
-
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	sc "github.com/hyperledger/fabric-protos-go/peer"
 	"github.com/hyperledger/fabric/common/flogging"
@@ -16,15 +15,16 @@ import (
 type SmartContract struct {
 }
 
-// Car :  Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
+// Car :  Define the car structure.  Structure tags are used by encoding/json library
 type Car struct {
 	VIN	   string `json:"vin"`
 	Year   string `json:"year"`	
 	Make   string `json:"make"`
 	Model  string `json:"model"`
 	Colour string `json:"colour"`
-	OwnerEmail  string `json:"ownerEmail"`
+	OwnerCnic string `json:"ownerCnic"`
 	CarPic  string `json:"carPic"`
+	Status  string `json:"status"`
 }
 
 // Init ;  Method for initializing smart contract
@@ -34,7 +34,22 @@ func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 var logger = flogging.MustGetLogger("fabcar_cc")
 
-// Invoke :  Method for INVOKING smart contract
+func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
+	cars := []Car{
+		Car{VIN: "4Y1SL65848Z411439", Year:"2018", Make: "Toyota", Model: "Corolla", Colour: "white",  OwnerCnic:"42101-2696589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg",Status:"created"},
+		Car{VIN: "9X1SL65848Z411439", Year:"2016", Make: "Audi", Model: "R8", Colour: "white", OwnerCnic:"42101-1196589-3", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/audi.jpg",Status:"created"},
+	}
+
+	i := 0
+	for i < len(cars) {
+		carAsBytes, _ := json.Marshal(cars[i])
+		APIstub.PutState(cars[i].VIN, carAsBytes)
+		i = i + 1
+	}
+
+	return shim.Success(nil)
+}
+
 func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	function, args := APIstub.GetFunctionAndParameters()
@@ -50,8 +65,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.createCar(APIstub, args)
 	case "changeCarOwner":
 		return s.changeCarOwner(APIstub, args)
-	case "changeCarColor":
-		return s.changeCarColor(APIstub, args)
 	case "getHistoryForAsset":
 		return s.getHistoryForAsset(APIstub, args)
 	case "queryCarsByOwner":
@@ -66,39 +79,31 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
+	
 
-	carAsBytes, _ := APIstub.GetState(args[0])
+	carAsBytes, err := APIstub.GetState(args[0])
+	if err != nil {
+		return shim.Error("Failed to read from world state")
+	}
+
+	if carAsBytes == nil {
+		return shim.Error("does not exist")
+	}
 	return shim.Success(carAsBytes)
-}
-
-func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	cars := []Car{
-		Car{VIN: "4Y1SL65848Z411439", Year:"2018", Make: "Toyota", Model: "Corolla", Colour: "white", OwnerEmail: "asadmuhammad427@gmail.com", CarPic: "https://carhistorypictures.s3-ap-southeast-1.amazonaws.com/2018_Toyota_Corolla.jpg"},
-	}
-
-	i := 0
-	for i < len(cars) {
-		carAsBytes, _ := json.Marshal(cars[i])
-		APIstub.PutState(cars[i].VIN, carAsBytes)
-		i = i + 1
-	}
-
-	return shim.Success(nil)
 }
 
 func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 7 {
-		return shim.Error("Incorrect number of arguments. Expecting 8")
+		return shim.Error("Incorrect number of arguments. Expecting 7")
 	}
-
-	var car = Car{VIN: args[0], Year: args[1], Make: args[2], Model: args[3], Colour: args[4], OwnerEmail: args[5], CarPic:args[6]}
+	var car = Car{VIN: args[0], Year: args[1], Make: args[2], Model: args[3], Colour: args[4], OwnerCnic: args[5], CarPic:args[6],Status:"created"}
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
 
-	indexName := "ownerEmail~vin"
-	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
+	indexName := "ownerCnic~vin"
+	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerCnic, args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -115,7 +120,7 @@ func (S *SmartContract) queryCarsByOwner(APIstub shim.ChaincodeStubInterface, ar
 	}
 	owner := args[0]
 
-	ownerAndIdResultIterator, err := APIstub.GetStateByPartialCompositeKey("ownerEmail~vin", []string{owner})
+	ownerAndIdResultIterator, err := APIstub.GetStateByPartialCompositeKey("ownerCnic~vin", []string{owner})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -231,13 +236,13 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 
-	indexName := "ownerEmail~vin"
+	indexName := "ownerCnic~vin"
 	carAsBytes, _ := APIstub.GetState(args[0])
 	car := Car{}
 
 	json.Unmarshal(carAsBytes, &car)
 	// delete old key
-	ownerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
+	ownerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerCnic, args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -247,7 +252,8 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 	}
 
 	// add new record
-	car.OwnerEmail = args[1]
+	car.OwnerCnic = args[1]
+	car.Status = "transfered"
 
 	carAsBytes, _ = json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
@@ -262,44 +268,7 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 
 	return shim.Success(carAsBytes)
 }
-func (s *SmartContract) changeCarColor(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
-	}
-
-	indexName := "ownerEmail~vin"
-	carAsBytes, _ := APIstub.GetState(args[0])
-	car := Car{}
-
-	json.Unmarshal(carAsBytes, &car)
-	// delete old key
-	ownerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	err = APIstub.DelState(ownerCaridIndexKey)
-	if err != nil {
-		return shim.Error("Failed to delete state:" + err.Error())
-	}
-
-	// add new record
-	car.Colour = args[1]
-	car.CarPic = args[2]
-
-	carAsBytes, _ = json.Marshal(car)
-	APIstub.PutState(args[0], carAsBytes)
-
-	// add new key
-	newOwnerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerEmail, args[0]})
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	value := []byte{0x00}
-	APIstub.PutState(newOwnerCaridIndexKey, value)
-
-	return shim.Success(carAsBytes)
-}
 
 // The main function is only relevant in unit test mode. Only included here for completeness.
 func main() {

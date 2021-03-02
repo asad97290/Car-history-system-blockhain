@@ -52,7 +52,7 @@ const getAffiliation = async (org) => {
     return org == "Org1" ? 'org1.department1' : 'org2.department1'
 }
 
-const getRegisteredUser = async (userEmail, userOrg) => {
+const getRegisteredUser = async (userCnic, userOrg) => {
     let ccp = await getCCP(userOrg)
 
     const caURL = await getCaUrl(userOrg, ccp)
@@ -62,12 +62,12 @@ const getRegisteredUser = async (userEmail, userOrg) => {
     const wallet = await Wallets.newFileSystemWallet(walletPath);
     console.log(`Wallet path: ${walletPath}`);
 
-    const userIdentity = await wallet.get(userEmail);
+    const userIdentity = await wallet.get(userCnic);
     if (userIdentity) {
-        console.log(`An identity for the user ${userEmail} already exists in the wallet`);
+        console.log(`An identity for the user ${userCnic} already exists in the wallet`);
         var response = {
             success: false,
-            message: `An identity for the user ${userEmail} already exists in the wallet`
+            message: `An identity for the user ${userCnic} already exists in the wallet`
         };
         return response
     }
@@ -88,14 +88,14 @@ const getRegisteredUser = async (userEmail, userOrg) => {
     let secret;
     try {
         // Register the user, enroll the user, and import the new identity into the wallet.
-        secret = await ca.register({ affiliation: await getAffiliation(userOrg), enrollmentID: userEmail, role: 'client' }, adminUser);
-        // const secret = await ca.register({ affiliation: 'org1.department1', enrollmentID: userEmail, role: 'client', attrs: [{ name: 'role', value: 'approver', ecert: true }] }, adminUser);
+        secret = await ca.register({ affiliation: await getAffiliation(userOrg), enrollmentID: userCnic, role: 'client' }, adminUser);
+        // const secret = await ca.register({ affiliation: 'org1.department1', enrollmentID: userCnic, role: 'client', attrs: [{ name: 'role', value: 'approver', ecert: true }] }, adminUser);
     } catch (error) {
         return error.message
     }
 
-    const enrollment = await ca.enroll({ enrollmentID: userEmail, enrollmentSecret: secret });
-    // const enrollment = await ca.enroll({ enrollmentID: userEmail, enrollmentSecret: secret, attr_reqs: [{ name: 'role', optional: false }] });
+    const enrollment = await ca.enroll({ enrollmentID: userCnic, enrollmentSecret: secret });
+    // const enrollment = await ca.enroll({ enrollmentID: userCnic, enrollmentSecret: secret, attr_reqs: [{ name: 'role', optional: false }] });
     let x509Identity;
     if (userOrg == "Org1") {
         x509Identity = {
@@ -119,25 +119,25 @@ const getRegisteredUser = async (userEmail, userOrg) => {
     }
 
     
-    await wallet.put(userEmail, x509Identity);
-    console.log(`Successfully registered and enrolled admin user ${userEmail} and imported it into the wallet`);
+    await wallet.put(userCnic, x509Identity);
+    console.log(`Successfully registered and enrolled admin user ${userCnic} and imported it into the wallet`);
 
     var response = {
         success: true,
-        message: userEmail + ' enrolled Successfully',
+        message: userCnic + ' enrolled Successfully',
         x509Identity
     };
     return response
 }
 
-const isUserRegistered = async  (userEmail, userOrg, certificate) => {
+const isUserRegistered = async  (userCnic, userOrg, certificate) => {
     const walletPath = await getWalletPath(userOrg)
     const wallet = await Wallets.newFileSystemWallet(walletPath);
     console.log(`Wallet path: ${walletPath}`);
-    const userIdentity = await wallet.get(userEmail);
+    const userIdentity = await wallet.get(userCnic);
     const cert = JSON.stringify(userIdentity.credentials.certificate)
     if ( userIdentity && cert === certificate) {
-        console.log(`An identity for the user ${userEmail} exists in the wallet`);
+        console.log(`An identity for the user ${userCnic} exists in the wallet`);
         return true
     }
     return false

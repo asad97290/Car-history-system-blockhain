@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import QRCode from 'qrcode'
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Carousel, CarouselItem, Image } from "react-bootstrap";
@@ -7,6 +8,10 @@ function Data() {
   const [token, setToken] = useState(() => JSON.parse(localStorage.getItem("token")))
   const [car, setCar] = useState({});
   const [carHistory, setCarHistory] = useState([]);
+<<<<<<< HEAD
+=======
+  const [url, setImageURL] = useState("");
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
 
   if (!token) {
     window.location.pathname = "/signin"
@@ -32,6 +37,33 @@ function Data() {
       fetchData();
     }, []);
 
+<<<<<<< HEAD
+=======
+  const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+  const url2 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+  let conf = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  };
+  useEffect(async () => {
+      const response = await axios.get(url1, conf);
+      setCar(() => response.data.result);
+      const response2 = await axios.get(url2, conf);
+      setCarHistory(() => response2.data.result);
+      // const canvas = await QRCode.toCanvas(response.data.result.vin, { errorCorrectionLevel: 'H' })
+      // var container = document.getElementById('qrcode')
+      // container.appendChild(canvas)
+      const url = await QRCode.toDataURL(vin);
+      setImageURL(url)
+  }, []);
+
+       
+
+
+  
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
   function copyText(id) {
     var text = document.getElementById(id).innerText;
     var elem = document.createElement("textarea");
@@ -142,10 +174,14 @@ function Data() {
                       </div>
                       <div className="row">
                         <div className="col-6">
-                          <p className="text-secondary">Owner</p>
+                          <p className="text-secondary">Owner CNIC</p>
                         </div>
                         <div className="col-6 d-flex">
+<<<<<<< HEAD
                           <p className="h6" id="ownerEmail"> {car.ownerEmail} </p><i onClick={() => copyText('ownerEmail')} className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+=======
+                          <p className="h6" id="ownerCnic"> {car.ownerCnic} </p><i onClick={()=>copyText('ownerCnic')}className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
                         </div>
                       </div>
                     </div>
@@ -159,32 +195,40 @@ function Data() {
                           return (
                             <li key={index}>
                               <a style={{ color: "#DC3545" }}>
-                                Transaction ID: {carInfo.TxId}{" "}
+                                Transaction ID: {carInfo.TxId.slice(0,40)}{" "}
                               </a>
                               <a
                                 className="float-right"
                                 style={{ color: "#DC3545" }}
                               >
                                 {" "}
-                                {new Date(carInfo.Timestamp).toDateString()}
+                                {new Date(carInfo.Timestamp).toLocaleString()}
                                 {" "}
                               </a>
                               <p>
                                 VIN: {carInfo.Value.vin}
                                 <br />
-                                Email: {carInfo.Value.ownerEmail}
+                                CNIC: {carInfo.Value.ownerCnic}
+                                <br />
+                                Status: <span style={{ color: "white",background:"black",padding:"2px",borderRadius:"7px"}}>{carInfo.Value.status}</span>
                                 <br />
                                 Model: {carInfo.Value.make}{" "}
-                                {carInfo.Value.model}
+                                {carInfo.Value.model}{" "}
                                 {carInfo.Value.year}
+<<<<<<< HEAD
                                 <br />
                                 <div className="d-flex">
                                   Color:&nbsp;<p style={{ border: "1px solid black", width: "60px", height: "20px", backgroundColor: carInfo.Value.colour }}></p></div>
+=======
+                                
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
                               </p>
                             </li>
                           );
                         })}
                       </ul>
+                      <h3>QR code:</h3>
+                      <img src={url} alt="car QR code"/>
                     </div>
                   </div>
                 </div>

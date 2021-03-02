@@ -14,7 +14,7 @@ const helper = require('./helper')
 //     return new MyTransactionEventHandler(transactionId, network, myOrgPeers);
 // }
 
-const invokeTransaction = async (channelName, chaincodeName, fcn, args, userEmail, org_name) => {
+const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic, org_name) => {
     try {
         logger.debug(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
 
@@ -29,11 +29,11 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userEmai
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the user.
-        let identity = await wallet.get(userEmail);
+        let identity = await wallet.get(userCnic);
         if (!identity) {
-            console.log(`An identity for the user ${userEmail} does not exist in the wallet, so registering user`);
-            await helper.getRegisteredUser(userEmail, org_name, true)
-            identity = await wallet.get(userEmail);
+            console.log(`An identity for the user ${userCnic} does not exist in the wallet, so registering user`);
+            await helper.getRegisteredUser(userCnic, org_name, true)
+            identity = await wallet.get(userCnic);
             console.log('Run the registerUser.js application before retrying');
             return;
         }
@@ -41,7 +41,7 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userEmai
         
 
         const connectOptions = {
-            wallet, identity: userEmail, discovery: { enabled: true, asLocalhost: true },
+            wallet, identity: userCnic, discovery: { enabled: true, asLocalhost: true },
             eventHandlerOptions: {
                 commitTimeout: 100,
                 strategy: DefaultEventHandlerStrategies.NETWORK_SCOPE_ALLFORTX
@@ -69,10 +69,6 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userEmai
         } else if (fcn === "changeCarOwner") {
             result = await contract.submitTransaction(fcn, args[0], args[1]);
             message = `Successfully changed car owner with key ${args[0]}`
-        } 
-        else if (fcn === "changeCarColor") {
-            result = await contract.submitTransaction(fcn, args[0], args[1], args[2]);
-            message = `Successfully changed car color with key ${args[0]}`
         } 
         else {
             return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
