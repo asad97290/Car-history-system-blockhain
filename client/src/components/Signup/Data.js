@@ -43,7 +43,6 @@ function Data() {
     }
 
     return (
-        
         <div className="container">
             <div className="row mx-auto justify-content-center row-content text-center" style={{ width: "95%" }}>
                 <div className="col-12 ">

@@ -41,23 +41,30 @@ function Body() {
       <div className="bg-light ">
         <div className="container py-5">
           <div className="row text-center">
-            <h2>
+            <h2 className="px-2 d-none d-md-block">
+              <span style={{ color: "#DC3545" }}>
+                Complete vehicle data all in one marketplace
+              </span>{" "}
+              - making automotive more secure, transparent and accessible by all
+            </h2>
+            <h2 className="px-2 d-block d-md-none" style={{ fontSize: "18px" }}>
               <span style={{ color: "#DC3545" }}>
                 Complete vehicle data all in one marketplace
               </span>{" "}
               - making automotive more secure, transparent and accessible by all
             </h2>
             <div
-              className="col-12 col-md-8"
+              className="col-12 col-md-7 col-lg-8 d-md-block d-none"
               style={{
                 backgroundImage: `url(${car})`,
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
+                backgroundSize: "contain",
                 backgroundPosition: "center",
+                width: "100%",
               }}
             ></div>
-            <div className="col-12 col-md-4 py-5">
-              <div className="card bg-white rounded-lg py-5 px-4 shadow">
+            <div className="col-12 col-md-5 col-lg-4 py-3 py-md-5">
+              <div className="card bg-white rounded-lg py-5 px-4 py-lg-5 px-lg-4 py-md-3 px-md-2 shadow">
                 <div className="card-body">
                   <h4 className="card-title">
                     Get an in depth vehicle history report:
@@ -99,7 +106,7 @@ function Body() {
             <p className="font-weight-light col-12">
               From distraction to satisfaction in a few moments
             </p>
-            <div className="col-12 col-md-6 col-lg-4">
+            <div className="col-12 col-md-4">
               <div className="row">
                 <div className="col-12 d-flex justify-content-center">
                   <div
@@ -128,7 +135,7 @@ function Body() {
                 </div>
               </div>
             </div>
-            <div className="col-12 col-md-6 col-lg-4">
+            <div className="col-12 col-md-4">
               <div className="row">
                 <div className="col-12 d-flex justify-content-center">
                   <div
@@ -158,7 +165,7 @@ function Body() {
                 </div>
               </div>
             </div>
-            <div className="col-12 col-md-6 col-lg-4">
+            <div className="col-12 col-md-4">
               <div className="row">
                 <div className="col-12 d-flex justify-content-center">
                   <div
