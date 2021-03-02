@@ -177,10 +177,10 @@ function Data() {
   }
 
   return (
-    <Container className="mb-5">
+    <Container className="my-5">
       <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
         <Row>
-          <Col sm={8}>
+          <Col sm={8} className="order-last order-sm-first py-3">
             <Tab.Content>
               <Tab.Pane eventKey="#link1" className="text-center">
                 <h4>My Car(s)</h4>
@@ -191,10 +191,10 @@ function Data() {
                       return (
                         <div key={index} className="col-12 col-md-6 mb-4">
                           <div className="card p-3 d-flex align-content-between flex-wrap">
-                            <div style={{ height: "150px" }}>
+                            <div className="overflow-hidden px-1 imgThumb bg-black">
                               <img
                                 src={car.carPic}
-                                className="card-img-top mh-100 mw-100"
+                                className="card-img-top mh-100 d-block"
                                 alt="..."
                               />
                             </div>
@@ -386,7 +386,7 @@ function Data() {
               </Tab.Pane>
             </Tab.Content>
           </Col>
-          <Col sm={4}>
+          <Col sm={4} className="order-first order-sm-last py-3">
             <h4>Hello, {email} </h4>
             <h6>
               Organization:{" "}

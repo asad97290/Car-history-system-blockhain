@@ -6,7 +6,7 @@ import { Helmet } from "react-helmet";
 
 function index(props) {
     return (
-        <div className="bg-light pt-5">
+        <div className="bg-light">
             <Helmet>
                 <title>Profile</title>
             </Helmet>
