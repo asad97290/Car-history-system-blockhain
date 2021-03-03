@@ -4,8 +4,9 @@
 }
 
 .row-content {
-  margin: 0px auto;
-  padding: 50px 0px 50px 0px;
+  /* margin: 0px auto; */
+  padding-top: 50px;
+  padding-bottom: 50px;
   border-bottom: 1px ridge;
   min-height: 400px;
 }
@@ -34,7 +35,7 @@ address {
 }
 
 body {
-  padding: 50px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
   z-index: 0;
 }
 
@@ -134,4 +135,39 @@ a.navList:hover {
 .list-group-item.active{
   background-color: #dc3545 !important;
   border-color: #dc3545 !important;
+}
+
+.carousel-item-imgs {
+  height: 480px !important;
+  background-color: #000;
+}
+
+.carousel-item-imgs3 {
+  height: 350px !important;
+  background-color: #000;
+}
+
+.carousel-item-imgs2 {
+  width: 100% !important;
+  background-color: #000;
+}
+
+.carousel-item-imgs img, .imgThumb img, .footImg img{
+  width: auto !important;
+  margin: auto;
+}
+
+.bg-black {
+  background-color: #000;
+}
+
+.imgThumb img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
+.imgThumb {
+  height: 150px !important;
+  overflow: hidden;
 }

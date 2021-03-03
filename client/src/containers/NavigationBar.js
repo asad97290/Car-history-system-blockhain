@@ -4,9 +4,15 @@ import { Link } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 
 function NavigationBar(props) {
+<<<<<<< HEAD
+  const [email, setEmail] = useState(() =>
+    localStorage.getItem("email")
+  );
+=======
   const [ cnic,setCnic ] = useState(() =>
   localStorage.getItem("cnic")
 );
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
   const [flag, setFlag] = useState(() =>
     JSON.parse(localStorage.getItem("token"))
   );
@@ -21,10 +27,9 @@ function NavigationBar(props) {
 
   return (
     <Navbar
-      variant="dark"
       bg="light"
-      expand="sm"
-      fixed="top"
+      expand="md"
+      sticky="top"
       className="shadow"
     >
       <Container>
@@ -57,27 +62,27 @@ function NavigationBar(props) {
                 <span className="fa fa-address-card fa-lg"></span> Profile
               </Nav.Link></Link>
             ) : (
-              <Link to="/signup"><Nav.Link
-                href="/signup"
-                className="mx-1 navList text-dark"
-              >
-                <span className="fa fa-address-card fa-lg"></span> Signup
+                <Link to="/signup"><Nav.Link
+                  href="/signup"
+                  className="mx-1 navList text-dark"
+                >
+                  <span className="fa fa-address-card fa-lg"></span> Signup
               </Nav.Link></Link>
-            )}
+              )}
             <hr />
             {flag ? (
               <Nav.Link onClick={signOut} className="mx-1 navList text-dark">
                 <span className="fa fa-sign-out fa-lg"></span> Signout
               </Nav.Link>
             ) : (
-              <Link to="/signin"><Nav.Link
-                href="/signin"
-                className="mx-1 navList text-dark"
-              >
-                <span className="fa fa-sign-in fa-lg"></span> Signin
+                <Link to="/signin"><Nav.Link
+                  href="/signin"
+                  className="mx-1 navList text-dark"
+                >
+                  <span className="fa fa-sign-in fa-lg"></span> Signin
               </Nav.Link></Link>
-            )}
-      </Nav>
+              )}
+          </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>

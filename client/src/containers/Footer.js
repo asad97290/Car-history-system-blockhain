@@ -8,7 +8,7 @@ function Footer(props) {
             <footer className="footer bg-dark text-white">
                 <div className="container">
                     <div className="row">
-                        <div className="offset-1 col-4 col-sm-2">
+                        <div className="col-12 col-md-6 col-lg-3">
                             <h5>Links</h5>
                             <ul className="list-unstyled">
                                 <li><Link to="/">Home</Link></li>
@@ -16,7 +16,7 @@ function Footer(props) {
                                 <li><Link to="/contact">Contact</Link></li>
                             </ul>
                         </div>
-                        <div className="col-7 col-sm-5" id="dest">
+                        <div className="col-12 col-md-6 col-lg-5" id="dest">
                             <h5>Our Address</h5>
                             <address className="text-white">
                             University Rd, Block 5 Gulshan-e-Iqbal, Karachi<br />
@@ -26,9 +26,8 @@ function Footer(props) {
                                     href="mailto:blockchain@lifecycle.com">blockchain@lifecycle.com</a>
                             </address>
                         </div>
-            
-                        <div className="followUs">
-                        <h5>Follow Us</h5>
+                        <div className="followUs col-12 col-lg-4 mt-3">
+                            <h5>Follow Us</h5>
                             <div className="text-center">
                                 <a className="footNavLink" href="https://www.facebook.com" target="_blank"><span className="footNavSpan"><svg className="footNav" aria-labelledby="simpleicons-facebook-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.676 0H1.324C.593 0 0 .593 0 1.324v21.352C0 23.408.593 24 1.324 24h11.494v-9.294H9.689v-3.621h3.129V8.41c0-3.099 1.894-4.785 4.659-4.785 1.325 0 2.464.097 2.796.141v3.24h-1.921c-1.5 0-1.792.721-1.792 1.771v2.311h3.584l-.465 3.63H16.56V24h6.115c.733 0 1.325-.592 1.325-1.324V1.324C24 .593 23.408 0 22.676 0"></path></svg></span></a>&nbsp;
                                 <a className="footNavLink" href="https://www.twitter.com" target="_blank"><span className="footNavSpan"><svg className="footNav" aria-labelledby="simpleicons-twitter-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.954 4.569a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.691 8.094 4.066 6.13 1.64 3.161a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.061a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.937 4.937 0 004.604 3.417 9.868 9.868 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.054 0 13.999-7.496 13.999-13.986 0-.209 0-.42-.015-.63a9.936 9.936 0 002.46-2.548l-.047-.02z"></path></svg></span></a>&nbsp;

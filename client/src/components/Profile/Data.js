@@ -179,10 +179,14 @@ function Data() {
   }
 
   return (
+<<<<<<< HEAD
+    <Container className="my-5">
+=======
     <Container className="mb-5 pb-5">
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
       <Tab.Container id="list-group-tabs-example" defaultActiveKey="#link1">
         <Row>
-          <Col sm={8}>
+          <Col sm={8} className="order-last order-sm-first py-3">
             <Tab.Content>
               <Tab.Pane eventKey="#link1" className="text-center">
                 <h4>My Car(s)</h4>
@@ -193,10 +197,10 @@ function Data() {
                       return (
                         <div key={index} className="col-12 col-md-6 mb-4">
                           <div className="card p-3 d-flex align-content-between flex-wrap">
-                            <div style={{ height: "150px" }}>
+                            <div className="overflow-hidden px-1 imgThumb bg-black">
                               <img
                                 src={car.carPic}
-                                className="card-img-top mh-100 mw-100"
+                                className="card-img-top mh-100 d-block"
                                 alt="..."
                               />
                             </div>
@@ -340,8 +344,13 @@ function Data() {
               </Tab.Pane>
             </Tab.Content>
           </Col>
+<<<<<<< HEAD
+          <Col sm={4} className="order-first order-sm-last py-3">
+            <h4>Hello, {email} </h4>
+=======
           <Col sm={4}>
             <h4>Hello, {cnic} </h4>
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
             <h6>
               Organization:{" "}
               {organization === "Org1" ? "Manufacturer" : "Car Owner"}{" "}

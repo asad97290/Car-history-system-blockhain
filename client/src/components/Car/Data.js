@@ -2,19 +2,43 @@ import React, { useEffect, useState } from "react";
 import QRCode from 'qrcode'
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Carousel, CarouselItem, Image } from "react-bootstrap";
 
 function Data() {
-  const [ token,setToken ] = useState( ()=>JSON.parse(localStorage.getItem("token")))
+  const [token, setToken] = useState(() => JSON.parse(localStorage.getItem("token")))
   const [car, setCar] = useState({});
   const [carHistory, setCarHistory] = useState([]);
+<<<<<<< HEAD
+=======
   const [url, setImageURL] = useState("");
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
 
   if (!token) {
     window.location.pathname = "/signin"
   }
 
-  const { vin } = useParams();
+    const { vin } = useParams();
 
+    const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+    const url2 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+    let conf = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    useEffect(() => {
+      async function fetchData() {
+        const response = await axios.get(url1, conf);
+        setCar(() => response.data.result);
+        const response2 = await axios.get(url2, conf);
+        setCarHistory(() => response2.data.result);
+      }
+      fetchData();
+    }, []);
+
+<<<<<<< HEAD
+=======
   const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
   const url2 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
   let conf = {
@@ -39,6 +63,7 @@ function Data() {
 
 
   
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
   function copyText(id) {
     var text = document.getElementById(id).innerText;
     var elem = document.createElement("textarea");
@@ -47,7 +72,7 @@ function Data() {
     elem.select();
     document.execCommand("copy");
     document.body.removeChild(elem);
-}
+  }
 
   return (
     <div className="container">
@@ -57,11 +82,43 @@ function Data() {
             <div className="col-12">
               <div className="card">
                 <div className="card-body">
-                  <img
+                  <Carousel interval={null} id="carousel-example-generic" data-ride="carousel" indicators={false} className="d-none d-lg-block">
+
+                    <CarouselItem className="carousel-item-imgs">
+                      <Image
+                        className="d-block mh-100 mx-auto"
+                        src={car.carPic}
+                        alt=""
+                      />
+                    </CarouselItem>
+                  </Carousel>
+                  <Carousel interval={null} id="carousel-example-generic2" data-ride="carousel" indicators={false} className="d-none d-md-block d-lg-none">
+                    <CarouselItem className="carousel-item-imgs3">
+                      <Image
+                        className="d-block mh-100 mx-auto"
+                        src={car.carPic}
+                        alt=""
+                      />
+                    </CarouselItem>
+                  </Carousel>
+                  <Carousel interval={null} id="carousel-example-generic3" data-ride="carousel" indicators={false} className="d-flex justify-content-center align-items-center d-md-none bg-black" style={{ height: "400px", }}>
+                    <CarouselItem className="carousel-item-imgs2 bg-black">
+                      <Image
+                        style={{
+                          maxHeight: "400px",
+
+                        }}
+                        className="d-block mw-100 mx-auto"
+                        src={car.carPic}
+                        alt=""
+                      />
+                    </CarouselItem>
+                  </Carousel>
+                  {/* <img
                     className="d-block card-img-top img-thumbnails carImg"
-                    src={car.carPic}
+                    src={car1}
                     alt=""
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -78,7 +135,7 @@ function Data() {
                           <p className="text-secondary">VIN</p>
                         </div>
                         <div className="col-6 d-flex">
-                          <p className="h6" id="vin">{car.vin}</p><i onClick={()=>copyText('vin')}className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+                          <p className="h6" id="vin">{car.vin}</p><i onClick={() => copyText('vin')} className="fa fa-clipboard mx-2" aria-hidden="true"></i>
                         </div>
                       </div>
                       <div className="row">
@@ -112,7 +169,7 @@ function Data() {
                           <p className="text-secondary">Color</p>
                         </div>
                         <div className="col-6">
-                          <p style={{border: "1px solid black", width: "60px", height: "20px", backgroundColor: car.colour}}></p>
+                          <p style={{ border: "1px solid black", width: "60px", height: "20px", backgroundColor: car.colour }}></p>
                         </div>
                       </div>
                       <div className="row">
@@ -120,7 +177,11 @@ function Data() {
                           <p className="text-secondary">Owner CNIC</p>
                         </div>
                         <div className="col-6 d-flex">
+<<<<<<< HEAD
+                          <p className="h6" id="ownerEmail"> {car.ownerEmail} </p><i onClick={() => copyText('ownerEmail')} className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+=======
                           <p className="h6" id="ownerCnic"> {car.ownerCnic} </p><i onClick={()=>copyText('ownerCnic')}className="fa fa-clipboard mx-2" aria-hidden="true"></i>
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
                         </div>
                       </div>
                     </div>
@@ -154,7 +215,13 @@ function Data() {
                                 Model: {carInfo.Value.make}{" "}
                                 {carInfo.Value.model}{" "}
                                 {carInfo.Value.year}
+<<<<<<< HEAD
+                                <br />
+                                <div className="d-flex">
+                                  Color:&nbsp;<p style={{ border: "1px solid black", width: "60px", height: "20px", backgroundColor: carInfo.Value.colour }}></p></div>
+=======
                                 
+>>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
                               </p>
                             </li>
                           );
