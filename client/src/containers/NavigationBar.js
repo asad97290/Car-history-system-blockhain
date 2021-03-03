@@ -4,15 +4,7 @@ import { Link } from "react-router-dom";
 import logo from "../assets/imgs/logo.png";
 
 function NavigationBar(props) {
-<<<<<<< HEAD
-  const [email, setEmail] = useState(() =>
-    localStorage.getItem("email")
-  );
-=======
-  const [ cnic,setCnic ] = useState(() =>
-  localStorage.getItem("cnic")
-);
->>>>>>> 038d40efca917b5b97c3b892280a81dec9d7d5d1
+  const [cnic, setCnic] = useState(() => localStorage.getItem("cnic"));
   const [flag, setFlag] = useState(() =>
     JSON.parse(localStorage.getItem("token"))
   );
@@ -21,67 +13,74 @@ function NavigationBar(props) {
     localStorage.setItem("token", null);
     localStorage.setItem("cnic", null);
     localStorage.setItem("organization", null);
-    setFlag(false)
-    window.location.pathname = "/"
+    setFlag(false);
+    window.location.pathname = "/";
   };
 
   return (
-    <Navbar
-      bg="light"
-      expand="md"
-      sticky="top"
-      className="shadow"
-    >
+    <Navbar bg="light" expand="md" sticky="top" className="shadow">
       <Container>
-        <Link to="/"><Navbar.Brand href="/">
-          <img src={logo} height="50" alt="Car Lifecycle Blockchain Network" />
-        </Navbar.Brand></Link>
-        <Navbar.Toggle style={{backgroundColor:"#dc3545"}} aria-controls="basic-navbar-nav" />
+        <Link to="/">
+          <Navbar.Brand href="/">
+            <img
+              src={logo}
+              height="50"
+              alt="Car Lifecycle Blockchain Network"
+            />
+          </Navbar.Brand>
+        </Link>
+        <Navbar.Toggle
+          style={{ backgroundColor: "#dc3545" }}
+          aria-controls="basic-navbar-nav"
+        />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto" activeKey={props.path}>
-            <Link to="/"><Nav.Link href="/" className="mx-1 navList text-dark">
-              <span className="fa fa-home fa-lg"></span> Home
-            </Nav.Link></Link>
+            <Link to="/">
+              <Nav.Link href="/" className="mx-1 navList text-dark">
+                <span className="fa fa-home fa-lg"></span> Home
+              </Nav.Link>
+            </Link>
             <hr />
-            <Link to="/about"><Nav.Link href="/about" className="mx-1 navList text-dark">
-              <span className="fa fa-info fa-lg"></span> About
-            </Nav.Link></Link>
+            <Link to="/about">
+              <Nav.Link href="/about" className="mx-1 navList text-dark">
+                <span className="fa fa-info fa-lg"></span> About
+              </Nav.Link>
+            </Link>
             <hr />
-            <Link to="/contact"><Nav.Link
-              href="/contact"
-              className="mx-1 navList text-dark"
-            >
-              <span className="fa fa-globe fa-lg"></span> Contact
-            </Nav.Link></Link>
+            <Link to="/contact">
+              <Nav.Link href="/contact" className="mx-1 navList text-dark">
+                <span className="fa fa-globe fa-lg"></span> Contact
+              </Nav.Link>
+            </Link>
             <hr />
             {flag ? (
-              <Link to={`/profile/${cnic}`}><Nav.Link
-                href={`/profile/${cnic}`}
-                className="mx-1 navList text-dark"
-              >
-                <span className="fa fa-address-card fa-lg"></span> Profile
-              </Nav.Link></Link>
-            ) : (
-                <Link to="/signup"><Nav.Link
-                  href="/signup"
+              <Link to={`/profile/${cnic}`}>
+                <Nav.Link
+                  href={`/profile/${cnic}`}
                   className="mx-1 navList text-dark"
                 >
+                  <span className="fa fa-address-card fa-lg"></span> Profile
+                </Nav.Link>
+              </Link>
+            ) : (
+              <Link to="/signup">
+                <Nav.Link href="/signup" className="mx-1 navList text-dark">
                   <span className="fa fa-address-card fa-lg"></span> Signup
-              </Nav.Link></Link>
-              )}
+                </Nav.Link>
+              </Link>
+            )}
             <hr />
             {flag ? (
               <Nav.Link onClick={signOut} className="mx-1 navList text-dark">
                 <span className="fa fa-sign-out fa-lg"></span> Signout
               </Nav.Link>
             ) : (
-                <Link to="/signin"><Nav.Link
-                  href="/signin"
-                  className="mx-1 navList text-dark"
-                >
+              <Link to="/signin">
+                <Nav.Link href="/signin" className="mx-1 navList text-dark">
                   <span className="fa fa-sign-in fa-lg"></span> Signin
-              </Nav.Link></Link>
-              )}
+                </Nav.Link>
+              </Link>
+            )}
           </Nav>
         </Navbar.Collapse>
       </Container>
