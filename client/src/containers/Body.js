@@ -8,7 +8,7 @@ function Body() {
   const [vin, setVin] = useState("");
   const [token, setToken] = useState("");
 
-  const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+  const url1 = `https://35.246.79.78:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -91,7 +91,9 @@ function Body() {
                     >
                       SEARCH
                     </Button>
-                    <Link style={{color:"#dc3545"}} to="/qrReader">or Scan QR code</Link>
+                    <Link style={{ color: "#dc3545" }} to="/qrReader">
+                      or Scan QR code
+                    </Link>
                   </Form>
                 </div>
               </div>

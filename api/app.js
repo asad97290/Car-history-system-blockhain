@@ -13,9 +13,8 @@ const jwt = require("jsonwebtoken");
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 const constants = require("./config/constants.json");
-const https = require('https'); 
-const fs = require('fs');
-
+const https = require("https");
+const fs = require("fs");
 
 // const host = process.env.HOST || constants.host;
 const port = process.env.PORT || constants.port;
@@ -24,7 +23,7 @@ const helper = require("./app/helper");
 const invoke = require("./app/invoke");
 const query = require("./app/query");
 
-app.options("https://192.168.0.111:3000", cors());
+app.options("https://35.246.79.78:3000", cors());
 app.use(cors());
 
 app.use(express.json());
@@ -39,7 +38,7 @@ app.use(
   expressJWT({
     secret: "thisismysecret",
   }).unless({
-    path: ["/users", "/users/login", "/profile-img-upload"]
+    path: ["/users", "/users/login", "/profile-img-upload"],
   })
 );
 app.use(bearerToken());
@@ -51,7 +50,7 @@ app.use((req, res, next) => {
   if (
     req.originalUrl.indexOf("/users") >= 0 ||
     req.originalUrl.indexOf("/profile-img-upload") >= 0 ||
-    req.originalUrl.indexOf("/users/login") >= 0 
+    req.originalUrl.indexOf("/users/login") >= 0
   ) {
     return next();
   }
@@ -90,14 +89,14 @@ app.use((req, res, next) => {
 // logger.info("***************  http://%s:%s  ******************", host, port);
 // server.timeout = 240000;
 
-
-https.createServer({ key: fs.readFileSync('./asad.key'), cert: fs.readFileSync('./asad.crt'), }, app) .listen(port,()=>{
+https
+  .createServer(
+    { key: fs.readFileSync("./asad.key"), cert: fs.readFileSync("./asad.crt") },
+    app
+  )
+  .listen(port, () => {
     console.log(`Server started on  ${port}`);
-}); 
-
-
-
-
+  });
 
 function getErrorMessage(field) {
   var response = {
@@ -147,8 +146,6 @@ const profileImgUpload = multer({
   },
 }).single("profileImage");
 
-
-
 // Register and enroll user
 app.post("/users", async function (req, res) {
   var userCnic = req.body.userCnic;
@@ -164,7 +161,6 @@ app.post("/users", async function (req, res) {
     res.json(getErrorMessage("'orgName'"));
     return;
   }
-
 
   let response = await helper.getRegisteredUser(userCnic, orgName, true);
 
@@ -239,7 +235,8 @@ app.post("/users/login", async function (req, res) {
 });
 
 // Invoke transaction on chaincode on target peers
-app.post("/channels/:channelName/chaincodes/:chaincodeName",
+app.post(
+  "/channels/:channelName/chaincodes/:chaincodeName",
   async function (req, res) {
     try {
       logger.debug(
@@ -298,7 +295,8 @@ app.post("/channels/:channelName/chaincodes/:chaincodeName",
 );
 
 // Query transaction
-app.get("/channels/:channelName/chaincodes/:chaincodeName",
+app.get(
+  "/channels/:channelName/chaincodes/:chaincodeName",
   async function (req, res) {
     try {
       logger.debug(
@@ -345,7 +343,7 @@ app.get("/channels/:channelName/chaincodes/:chaincodeName",
         req.userCnic,
         req.orgname
       );
-      
+
       res.send(message);
     } catch (error) {
       const response_payload = {
