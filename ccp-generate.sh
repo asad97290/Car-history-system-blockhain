@@ -15,7 +15,7 @@ function json_ccp {
         -e "s#\${PEER0PEM}#$PP_1#" \
         -e "s#\${CAPEM}#$CP#" \
         -e "s#\${PEER1PEM}#$PP_2#" \
-        $HOME/car_history_system/api/config/ccp-template.json
+        $HOME/Car-history-system/api/config/ccp-template.json
 }
 
 
@@ -23,16 +23,16 @@ ORG=1
 P0PORT=7051
 P1PORT=8051
 CAPORT=7054
-PEER0PEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-CAPEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
-PEER1PEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
-echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEER0PEM $PEER1PEM $CAPEM)" > $HOME/car_history_system/api/config/connection-org1.json
+PEER0PEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+CAPEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+PEER1PEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt
+echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEER0PEM $PEER1PEM $CAPEM)" > $HOME/Car-history-system/api/config/connection-org1.json
 
 ORG=2
 P0PORT=9051
 P1PORT=10051
 CAPORT=8054
-PEER0PEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-CAPEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem
-PEER1PEM=$HOME/car_history_system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt
-echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEER0PEM $PEER1PEM $CAPEM)" > $HOME/car_history_system/api/config/connection-org2.json
+PEER0PEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+CAPEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem
+PEER1PEM=$HOME/Car-history-system/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt
+echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEER0PEM $PEER1PEM $CAPEM)" > $HOME/Car-history-system/api/config/connection-org2.json
