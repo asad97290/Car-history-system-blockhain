@@ -101,7 +101,9 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
-
+	
+	APIstub.SetEvent("CreateCar",carAsBytes)
+	
 	indexName := "ownerCnic~vin"
 	colorNameIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{car.OwnerCnic, args[0]})
 	if err != nil {
@@ -181,7 +183,7 @@ func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, arg
 	}
 	defer resultsIterator.Close()
 
-	// buffer is a JSON array containing historic values for the marble
+	// buffer is a JSON array containing historic values for the car
 	var buffer bytes.Buffer
 	buffer.WriteString("[")
 
@@ -203,7 +205,7 @@ func (t *SmartContract) getHistoryForAsset(stub shim.ChaincodeStubInterface, arg
 		buffer.WriteString(", \"Value\":")
 		// if it was a delete operation on given key, then we need to set the
 		//corresponding value null. Else, we will write the response.Value
-		//as-is (as the Value itself a JSON marble)
+		//as-is (as the Value itself a JSON car)
 		if response.IsDelete {
 			buffer.WriteString("null")
 		} else {
@@ -257,7 +259,7 @@ func (s *SmartContract) changeCarOwner(APIstub shim.ChaincodeStubInterface, args
 
 	carAsBytes, _ = json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
-
+	APIstub.SetEvent("OwnerChanged",carAsBytes)
 	// add new key
 	newOwnerCaridIndexKey, err := APIstub.CreateCompositeKey(indexName, []string{args[1], args[0]})
 	if err != nil {

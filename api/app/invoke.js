@@ -3,24 +3,15 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('BasicNetwork');
 const util = require('util')
 
-// const createTransactionEventHandler = require('./MyTransactionEventHandler.ts')
 
 const helper = require('./helper')
+const {contractListener } = require("./listeners");
 
-// const createTransactionEventHandler = (transactionId, network) => {
-//     /* Your implementation here */
-//     const mspId = network.getGateway().getIdentity().mspId;
-//     const myOrgPeers = network.getChannel().getEndorsers(mspId);
-//     return new MyTransactionEventHandler(transactionId, network, myOrgPeers);
-// }
 
 const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic, org_name) => {
     try {
         logger.debug(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
 
-        // load the network configuration
-        // const ccpPath =path.resolve(__dirname, '..', 'config', 'connection-org1.json');
-        // const ccpJSON = fs.readFileSync(ccpPath, 'utf8')
         const ccp = await helper.getCCP(org_name) //JSON.parse(ccpJSON);
 
         // Create a new file system based wallet for managing identities.
@@ -59,7 +50,8 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic
         const network = await gateway.getNetwork(channelName);
 
         const contract = network.getContract(chaincodeName);
-
+        await contract.addContractListener(contractListener)
+    
         let result
         let message;
         if (fcn === "createCar" ) {
@@ -71,6 +63,7 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic
             message = `Successfully changed car owner with key ${args[0]}`
         } 
         else {
+            
             return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
         }
 

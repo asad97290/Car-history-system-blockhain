@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button, Form } from "react-bootstrap";
 
 function Data() {
-  const url = "https://35.246.79.78:4000/users";
+  const url = "http://localhost:4000/users";
   let conf = {
     headers: {
       "Content-Type": "application/json",

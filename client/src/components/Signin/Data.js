@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 function Data() {
   let cert;
-  const url = "https://35.246.79.78:4000/users/login";
+  const url = "http://localhost:4000/users/login";
   let conf = {
     headers: {
       "Content-Type": "application/json",

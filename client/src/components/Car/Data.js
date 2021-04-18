@@ -18,8 +18,8 @@ function Data() {
 
   const { vin } = useParams();
 
-  const url1 = `https://35.246.79.78:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
-  const url2 = `https://35.246.79.78:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
+  const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+  const url2 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
   let conf = {
     headers: {
       Authorization: `Bearer ${token}`,

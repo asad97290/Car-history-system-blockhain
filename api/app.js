@@ -23,7 +23,7 @@ const helper = require("./app/helper");
 const invoke = require("./app/invoke");
 const query = require("./app/query");
 
-app.options("https://35.246.79.78:3000", cors());
+app.options("*", cors());
 app.use(cors());
 
 app.use(express.json());
@@ -89,13 +89,17 @@ app.use((req, res, next) => {
 // logger.info("***************  http://%s:%s  ******************", host, port);
 // server.timeout = 240000;
 
-https
-  .createServer(
-    { key: fs.readFileSync("./asad.key"), cert: fs.readFileSync("./asad.crt") },
-    app
-  )
-  .listen(port, () => {
-    console.log(`Server started on  ${port}`);
+// https
+//   .createServer(
+//     { key: fs.readFileSync("./asad.key"), cert: fs.readFileSync("./asad.crt") },
+//     app
+//   )
+//   .listen(port, () => {
+//     console.log(`Server started on  ${port}`);
+//   });
+
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
   });
 
 function getErrorMessage(field) {
@@ -334,7 +338,8 @@ app.get(
       args = args.replace(/'/g, '"');
       args = JSON.parse(args);
       logger.debug(args);
-
+      console.log("------",req.userCnic)
+      console.log("------",req.orgname)
       let message = await query.query(
         channelName,
         chaincodeName,
