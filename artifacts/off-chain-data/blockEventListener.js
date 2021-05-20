@@ -44,12 +44,12 @@ const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
-const couchdbutil = require('./couchdbutil.js');
+// const couchdbutil = require('./couchdbutil.js');
 const blockProcessing = require('./blockProcessing.js');
 
 const config = require('./config.json');
 const channelid = config.channelid;
-const peer_name = config.peer_name;
+// const peer_name = config.peer_name;
 const use_couchdb = config.use_couchdb;
 const couchdb_address = config.couchdb_address;
 
@@ -113,7 +113,7 @@ async function main() {
         }
 
         // Create a new file system based wallet for managing identities.
-        const walletPath = path.join(process.cwd(), '../../api-2.0/org1-wallet/');
+        const walletPath = path.join(process.cwd(), '../../api/org1-wallet/');
         const wallet = await Wallets.newFileSystemWallet(walletPath);
         console.log(`Wallet path: ${walletPath}`);
 
@@ -128,7 +128,7 @@ async function main() {
         // Parse the connection profile. This would be the path to the file downloaded
         // from the IBM Blockchain Platform operational console.
         // const ccpPath = path.resolve(__dirname, '..', 'first-network', 'connection-org1.json');
-        const ccpPath = '../../api-2.0/config/connection-org1.json'
+        const ccpPath = '../../api/config/connection-org1.json'
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();

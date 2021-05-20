@@ -13,9 +13,9 @@ const jwt = require("jsonwebtoken");
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 const constants = require("./config/constants.json");
-const https = require("https");
-const fs = require("fs");
-
+// const https = require("https");
+// const fs = require("fs");
+const nano = require("nano")("http://admin:password@localhost:5990");
 // const host = process.env.HOST || constants.host;
 const port = process.env.PORT || constants.port;
 
@@ -25,7 +25,7 @@ const query = require("./app/query");
 
 app.options("*", cors());
 app.use(cors());
-
+let offDb;
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -38,7 +38,7 @@ app.use(
   expressJWT({
     secret: "thisismysecret",
   }).unless({
-    path: ["/users", "/users/login", "/profile-img-upload"],
+    path: ["/users", "/users/login", "/profile-img-upload","/getCarHistory"],
   })
 );
 app.use(bearerToken());
@@ -50,7 +50,8 @@ app.use((req, res, next) => {
   if (
     req.originalUrl.indexOf("/users") >= 0 ||
     req.originalUrl.indexOf("/profile-img-upload") >= 0 ||
-    req.originalUrl.indexOf("/users/login") >= 0
+    req.originalUrl.indexOf("/users/login") >= 0 ||
+    req.originalUrl.indexOf("/getCarHistory") >= 0
   ) {
     return next();
   }
@@ -81,6 +82,17 @@ app.use((req, res, next) => {
   });
 });
 
+async function createOffChainDB() {
+  try {
+
+    offDb = nano.use("alice");
+  } catch (e) {
+    // failed
+    console.error(e);
+  }
+}
+createOffChainDB();
+
 // var server = http.createServer(app).listen(port, function () {
 //   console.log(`Server started on ${port}`);
 // });
@@ -99,8 +111,8 @@ app.use((req, res, next) => {
 //   });
 
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
-  });
+  console.log(`Server started on port ${port}`);
+});
 
 function getErrorMessage(field) {
   var response = {
@@ -277,9 +289,13 @@ app.post(
         fcn,
         args,
         req.userCnic,
-        req.orgname
+        req.orgname,
+        offDb
       );
-      console.log(`message result is : ${message}`);
+      console.log(
+        "message result is : -------------",
+        JSON.stringify(message.result)
+      );
 
       const response_payload = {
         result: message,
@@ -338,8 +354,8 @@ app.get(
       args = args.replace(/'/g, '"');
       args = JSON.parse(args);
       logger.debug(args);
-      console.log("------",req.userCnic)
-      console.log("------",req.orgname)
+      console.log("------", req.userCnic);
+      console.log("------", req.orgname);
       let message = await query.query(
         channelName,
         chaincodeName,
@@ -348,7 +364,6 @@ app.get(
         req.userCnic,
         req.orgname
       );
-
       res.send(message);
     } catch (error) {
       const response_payload = {
@@ -361,6 +376,13 @@ app.get(
   }
 );
 
+
+
+app.get("/getCarHistory",async (req,res)=>{
+  let vin = req.query.vin;
+  let car = await offDb.get(vin)
+  res.json({car})
+})
 //post car pics to aws s3
 app.post("/profile-img-upload", (req, res) => {
   profileImgUpload(req, res, (error) => {

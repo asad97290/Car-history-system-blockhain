@@ -1,3 +1,4 @@
+import React from "react";
 import Routes from "./config/Routes";
 
 function App() {

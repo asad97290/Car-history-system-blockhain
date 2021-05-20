@@ -12,25 +12,21 @@ function Data() {
   const [carHistory, setCarHistory] = useState([]);
   const [url, setImageURL] = useState("");
 
-  if (!token) {
-    window.location.pathname = "/signin";
-  }
+  // if (!token) {
+  //   window.location.pathname = "/signin";
+  // }
 
   const { vin } = useParams();
 
-  const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
-  const url2 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
-  let conf = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  };
+  // const url1 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+  const url2 = `http://localhost:4000/getCarHistory?vin=${vin}`;
+
   useEffect(async () => {
-    const response = await axios.get(url1, conf);
-    setCar(() => response.data.result);
-    const response2 = await axios.get(url2, conf);
-    setCarHistory(() => response2.data.result);
+    // const response = await axios.get(url1, conf);
+    
+    const response2 = await axios.get(url2);
+    setCar(() => response2.data.car.result[response2.data.car.result.length-1].asset);
+    setCarHistory(() => response2.data.car.result);
     // const canvas = await QRCode.toCanvas(response.data.result.vin, { errorCorrectionLevel: 'H' })
     // var container = document.getElementById('qrcode')
     // container.appendChild(canvas)
@@ -204,21 +200,18 @@ function Data() {
                           return (
                             <li key={index}>
                               <a style={{ color: "#DC3545" }}>
-                                Transaction ID: {carInfo.TxId.slice(0, 40)}{" "}
+                                Transaction ID: {carInfo.txId.slice(0, 40)}{" "}
                               </a>
                               <a
                                 className="float-right"
                                 style={{ color: "#DC3545" }}
                               >
-                                {" "}
-                                {new Date(
-                                  carInfo.Timestamp
-                                ).toLocaleString()}{" "}
+                                {carInfo.date}
                               </a>
-                              <p>
-                                VIN: {carInfo.Value.vin}
+                              <p> 
+                                VIN: {carInfo.asset.vin}
                                 <br />
-                                CNIC: {carInfo.Value.ownerCnic}
+                                CNIC: {carInfo.asset.ownerCnic}
                                 <br />
                                 Status:{" "}
                                 <span
@@ -229,11 +222,11 @@ function Data() {
                                     borderRadius: "7px",
                                   }}
                                 >
-                                  {carInfo.Value.status}
+                                  {carInfo.asset.status}
                                 </span>
                                 <br />
-                                Model: {carInfo.Value.make}{" "}
-                                {carInfo.Value.model} {carInfo.Value.year}
+                                Model: {carInfo.asset.make}{" "}
+                                {carInfo.asset.model} {carInfo.asset.year}
                                 <br />
                                 <div className="d-flex">
                                   Color:&nbsp;
@@ -242,7 +235,7 @@ function Data() {
                                       border: "1px solid black",
                                       width: "60px",
                                       height: "20px",
-                                      backgroundColor: carInfo.Value.colour,
+                                      backgroundColor: carInfo.asset.colour,
                                     }}
                                   ></p>
                                 </div>
