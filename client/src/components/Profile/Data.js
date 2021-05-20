@@ -26,7 +26,7 @@ function Data() {
     window.location.pathname = "/signin";
   }
 
-  const url = "https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar";
+  const url = "http://localhost:4000/channels/mychannel/chaincodes/fabcar";
   const url2 = url + `?args=["${cnic}"]&fcn=queryCarsByOwner`;
 
   let conf = {
@@ -62,7 +62,7 @@ function Data() {
         selectedFile.selected.name
       );
       axios
-        .post("https://192.168.0.111:4000/profile-img-upload", data, {
+        .post("http://localhost:4000/profile-img-upload", data, {
           headers: {
             accept: "application/json",
             "Accept-Language": "en-US,en;q=0.8",
@@ -102,7 +102,7 @@ function Data() {
   }
 
   async function checkCar(vin) {
-    const url3 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
+    const url3 = `http://localhost:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=queryCar`;
     const response = await axios.get(url3, conf);
     if (response.data.error) {
       return true;
@@ -166,9 +166,9 @@ function Data() {
 
       axios
         .post(url, data, conf)
-        .then(alert("Success car asset created"))
+        .then(()=>alert("Success car asset created"))
         .catch((error) => {
-          alert("Something Went Wrong! Try Again.");
+          alert("Something Went Wrong! Try Again.",error);
         });
       document.getElementById("carVin").value = "";
       document.getElementById("color").value = "";
@@ -340,7 +340,7 @@ function Data() {
               </Tab.Pane>
             </Tab.Content>
           </Col>
-          <Col sm={4}>
+          <Col sm={4} className="py-3">
             <h4>Hello, {cnic} </h4>
             <h6>
               Organization:{" "}

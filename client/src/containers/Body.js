@@ -8,13 +8,8 @@ function Body() {
   const [vin, setVin] = useState("");
   const [token, setToken] = useState("");
 
-  const url1 = `https://192.168.0.111:4000/channels/mychannel/chaincodes/fabcar?args=["${vin}"]&fcn=getHistoryForAsset`;
-  let conf = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  };
+  const url1 = `http://localhost:4000/getCarHistory?vin=${vin}`;
+
 
   const handleOnChange = (event) => {
     setVin(event.target.value);
@@ -23,17 +18,15 @@ function Body() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (token) {
-      axios.get(url1, conf).then((response) => {
-        if (response.data.result.length === 0) {
+
+      axios.get(url1).then((response) => {
+        if (response.data.car.result.length === 0) {
           alert("Invalid VIN Number");
         } else {
-          window.location.pathname = "/car/" + vin + "/" + token;
+          window.location.pathname = "/car/" + vin;
         }
       });
-    } else {
-      alert("Signin First to Continue");
-    }
+   
   };
 
   return (
@@ -91,7 +84,9 @@ function Body() {
                     >
                       SEARCH
                     </Button>
-                    <Link style={{color:"#dc3545"}} to="/qrReader">or Scan QR code</Link>
+                    <Link style={{ color: "#dc3545" }} to="/qrReader">
+                      or Scan QR code
+                    </Link>
                   </Form>
                 </div>
               </div>

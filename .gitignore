@@ -24,7 +24,7 @@ artifacts/channel/Org2MSPanchors.tx
 artifacts/src/chaincode/vendor
 artifacts/src/chaincode/go.sum
 
-channel-artifacts/*
+channel-artifacts/mychannel.block
 *.txt
 artifacts/channel/fabric-ca/*
 artifacts/channel/crypto-config/*

@@ -1,11 +1,11 @@
 const { Gateway, Wallets, } = require('fabric-network');
-const fs = require('fs');
-const path = require("path")
-const log4js = require('log4js');
-const logger = log4js.getLogger('BasicNetwork');
-const util = require('util')
+
+
 
 const helper = require('./helper')
+
+
+
 const query = async (channelName, chaincodeName, args, fcn, userCnic, org_name) => {
 
     try {
@@ -46,6 +46,8 @@ const query = async (channelName, chaincodeName, args, fcn, userCnic, org_name) 
         console.log(`Transaction has been evaluated, result is: ${result.toString()}`);
 
         result = JSON.parse(result.toString());
+        
+        
         const _result = {
             result,
             error: null,

@@ -3,24 +3,15 @@ const log4js = require('log4js');
 const logger = log4js.getLogger('BasicNetwork');
 const util = require('util')
 
-// const createTransactionEventHandler = require('./MyTransactionEventHandler.ts')
 
 const helper = require('./helper')
+const {contractListener,getCar } = require("./listeners");
 
-// const createTransactionEventHandler = (transactionId, network) => {
-//     /* Your implementation here */
-//     const mspId = network.getGateway().getIdentity().mspId;
-//     const myOrgPeers = network.getChannel().getEndorsers(mspId);
-//     return new MyTransactionEventHandler(transactionId, network, myOrgPeers);
-// }
 
-const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic, org_name) => {
+const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic, org_name,offDb) => {
     try {
         logger.debug(util.format('\n============ invoke transaction on channel %s ============\n', channelName));
 
-        // load the network configuration
-        // const ccpPath =path.resolve(__dirname, '..', 'config', 'connection-org1.json');
-        // const ccpJSON = fs.readFileSync(ccpPath, 'utf8')
         const ccp = await helper.getCCP(org_name) //JSON.parse(ccpJSON);
 
         // Create a new file system based wallet for managing identities.
@@ -59,18 +50,41 @@ const invokeTransaction = async (channelName, chaincodeName, fcn, args, userCnic
         const network = await gateway.getNetwork(channelName);
 
         const contract = network.getContract(chaincodeName);
+        await contract.addContractListener(contractListener)
 
         let result
         let message;
         if (fcn === "createCar" ) {
+            
             result = await contract.submitTransaction(fcn, args[0], args[1], args[2], args[3], args[4],args[5], args[6]);
+            
+            // let output = JSON.parse(result.toString());
+            let _result = await getCar() 
+            let a= {
+                result:[_result]
+            }
+            // console.log("+++++++++++++++++++++++",JSON.parse(result.toString()))
+            await offDb.insert(a, args[0])
             message = `Successfully added the car asset with key ${args[0]}`
-
+        
         } else if (fcn === "changeCarOwner") {
             result = await contract.submitTransaction(fcn, args[0], args[1]);
+            let _result = await getCar()
+            // let output = JSON.parse(result.toString());
+            let a = await offDb.get(args[0])
+            // console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK",a)
+            a.result.push(_result)
+           
+            await offDb.insert({ _id: a._id, _rev: a._rev,result:a.result  })
+            // await offDb.insert([...output.result], args[0])
+            
+            // let b = await offDb.get(args[0])
+       
+         
             message = `Successfully changed car owner with key ${args[0]}`
         } 
         else {
+            
             return `Invocation require either createCar or changeCarOwner as function but got ${fcn}`
         }
 
