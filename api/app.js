@@ -95,7 +95,10 @@ async function createOffChainDB() {
 
 async function createAuthDB() {
   try {
-    await nano.db.create("auth");
+    const databases = await nano.db.list();
+    if (databases.indexOf("auth") < 0) {
+      await nano.db.create("auth");
+    }
     authDb = nano.use("auth");
   } catch (e) {
     // failed
