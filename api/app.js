@@ -13,8 +13,8 @@ const jwt = require("jsonwebtoken");
 const bearerToken = require("express-bearer-token");
 const cors = require("cors");
 const constants = require("./config/constants.json");
-// const https = require("https");
-// const fs = require("fs");
+const https = require("https");
+const fs = require("fs");
 const nano = require("nano")("http://admin:password@localhost:5990");
 // const host = process.env.HOST || constants.host;
 const port = process.env.PORT || constants.port;
@@ -26,6 +26,7 @@ const query = require("./app/query");
 app.options("*", cors());
 app.use(cors());
 let offDb;
+let authDb;
 app.use(express.json());
 app.use(
   express.urlencoded({
@@ -91,7 +92,18 @@ async function createOffChainDB() {
     console.error(e);
   }
 }
+
+async function createAuthDB() {
+  try {
+
+    authDb = nano.use("auth");
+  } catch (e) {
+    // failed
+    console.error(e);
+  }
+}
 createOffChainDB();
+createAuthDB();
 
 // var server = http.createServer(app).listen(port, function () {
 //   console.log(`Server started on ${port}`);
@@ -101,14 +113,14 @@ createOffChainDB();
 // logger.info("***************  http://%s:%s  ******************", host, port);
 // server.timeout = 240000;
 
-// https
-//   .createServer(
-//     { key: fs.readFileSync("./asad.key"), cert: fs.readFileSync("./asad.crt") },
-//     app
-//   )
-//   .listen(port, () => {
-//     console.log(`Server started on  ${port}`);
-//   });
+https
+  .createServer(
+    { key: fs.readFileSync("./asad.key"), cert: fs.readFileSync("./asad.crt") },
+    app
+  )
+  .listen(port, () => {
+    console.log(`Server started on  ${port}`);
+  });
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
@@ -165,12 +177,17 @@ const profileImgUpload = multer({
 // Register and enroll user
 app.post("/users", async function (req, res) {
   var userCnic = req.body.userCnic;
+  var password = req.body.password;
   var orgName = req.body.orgName;
   logger.debug("End point : /users");
   logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
   if (!userCnic) {
     res.json(getErrorMessage("'userCnic'"));
+    return;
+  }
+  if (!password) {
+    res.json(getErrorMessage("'password'"));
     return;
   }
   if (!orgName) {
@@ -191,6 +208,8 @@ app.post("/users", async function (req, res) {
       userCnic,
       orgName
     );
+    let r = await authDb.insert({cnic: userCnic, org: orgName, x509Identity: response.x509Identity}, userCnic);
+    console.log('authDb Response', r);
     res.json(response);
   } else {
     logger.debug(
@@ -206,8 +225,9 @@ app.post("/users", async function (req, res) {
 // Login and get jwt
 app.post("/users/login", async function (req, res) {
   var userCnic = req.body.userCnic;
+  var password = req.body.password;
   var orgName = req.body.orgName;
-  var certificate = req.body.certificate;
+  // var certificate = req.body.certificate;
   logger.debug("End point : /users");
   logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
@@ -220,11 +240,19 @@ app.post("/users/login", async function (req, res) {
     res.json(getErrorMessage("'orgName'"));
     return;
   }
-  if (!certificate) {
-    res.json(getErrorMessage("'certificate'"));
+  if (!password) {
+    res.json(getErrorMessage("'password'"));
     return;
   }
+  /*if (!certificate) {
+    res.json(getErrorMessage("'certificate'"));
+    return;
+  }*/
 
+  console.log('get user from db');
+  let user = await authDb.get(userCnic);
+  console.log(user);
+  let certificate =  user.x509Identity.credentials.certificate;
   var token = jwt.sign(
     {
       exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
