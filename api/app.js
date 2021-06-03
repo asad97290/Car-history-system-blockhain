@@ -95,7 +95,7 @@ async function createOffChainDB() {
 
 async function createAuthDB() {
   try {
-
+    await nano.db.create("auth");
     authDb = nano.use("auth");
   } catch (e) {
     // failed
@@ -231,7 +231,7 @@ app.post("/users/login", async function (req, res) {
   logger.debug("End point : /users");
   logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
-  logger.debug("certificate  : " + certificate);
+  /*logger.debug("certificate  : " + certificate);*/
   if (!userCnic) {
     res.json(getErrorMessage("'userCnic'"));
     return;
