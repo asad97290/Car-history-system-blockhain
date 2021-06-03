@@ -122,9 +122,9 @@ https
     console.log(`Server started on  ${port}`);
   });
 
-app.listen(port, () => {
+/*app.listen(port, () => {
   console.log(`Server started on port ${port}`);
-});
+});*/
 
 function getErrorMessage(field) {
   var response = {
