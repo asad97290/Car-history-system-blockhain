@@ -252,11 +252,11 @@ app.post("/users/login", async function (req, res) {
     return;
   }*/
 
-  console.log('get user from db');
+
   let user = await authDb.get(userCnic);
-  console.log(user);
+
   let certificate =  JSON.stringify(user.x509Identity.credentials.certificate);
-  console.log('certificate', certificate);
+
   var token = jwt.sign(
     {
       exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
