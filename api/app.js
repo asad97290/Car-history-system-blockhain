@@ -224,7 +224,7 @@ app.post("/users", async function (req, res) {
       }
     };
     const users = await authDb.find(query);
-    if (users) {
+    if (users.docs && users.docs.length > 0) {
       res.json({success: false, message: "A user with this CNIC already exists!"});
       return;
     }
