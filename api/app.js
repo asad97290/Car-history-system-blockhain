@@ -179,12 +179,18 @@ const profileImgUpload = multer({
 
 // Register and enroll user
 app.post("/users", async function (req, res) {
+  var email = req.body.email;
   var userCnic = req.body.userCnic;
   var password = req.body.password;
   var orgName = req.body.orgName;
   logger.debug("End point : /users");
+  logger.debug("Email : " + email);
   logger.debug("User name : " + userCnic);
   logger.debug("Org name  : " + orgName);
+  if (!email) {
+    res.json(getErrorMessage("'email'"));
+    return;
+  }
   if (!userCnic) {
     res.json(getErrorMessage("'userCnic'"));
     return;
@@ -197,6 +203,9 @@ app.post("/users", async function (req, res) {
     res.json(getErrorMessage("'orgName'"));
     return;
   }
+
+  const user = await authDb.get(email);
+  console.log('user', user);
 
   let response = await helper.getRegisteredUser(userCnic, orgName, true);
 
@@ -211,7 +220,8 @@ app.post("/users", async function (req, res) {
       userCnic,
       orgName
     );
-    let r = await authDb.insert({cnic: userCnic, org: orgName, x509Identity: response.x509Identity}, userCnic);
+
+    let r = await authDb.insert({email: email, password, password, cnic: userCnic, org: orgName, x509Identity: response.x509Identity}, email);
     console.log('authDb Response', r);
     res.json(response);
   } else {
@@ -227,16 +237,17 @@ app.post("/users", async function (req, res) {
 
 // Login and get jwt
 app.post("/users/login", async function (req, res) {
-  var userCnic = req.body.userCnic;
+  /*var userCnic = req.body.userCnic;*/
+  var email = req.body.email;
   var password = req.body.password;
   var orgName = req.body.orgName;
-  // var certificate = req.body.certificate;
+
   logger.debug("End point : /users");
-  logger.debug("User name : " + userCnic);
+  logger.debug("Email : " + email);
   logger.debug("Org name  : " + orgName);
-  /*logger.debug("certificate  : " + certificate);*/
-  if (!userCnic) {
-    res.json(getErrorMessage("'userCnic'"));
+
+  if (!email) {
+    res.json(getErrorMessage("'email'"));
     return;
   }
   if (!orgName) {
@@ -247,19 +258,28 @@ app.post("/users/login", async function (req, res) {
     res.json(getErrorMessage("'password'"));
     return;
   }
-  /*if (!certificate) {
-    res.json(getErrorMessage("'certificate'"));
+
+
+  let user = await authDb.get(email);
+  console.log('user', user);
+
+  if (password  !== user.password) {
+    let response = {
+      success: false,
+      message: "Email/Password does not match!",
+    };
+    res.json(response);
     return;
-  }*/
+  }
 
-
-  let user = await authDb.get(userCnic);
+  let userCnic = user.cnic;
 
   let certificate =  JSON.stringify(user.x509Identity.credentials.certificate);
 
   var token = jwt.sign(
     {
       exp: Math.floor(Date.now() / 1000) + parseInt(constants.jwt_expiretime),
+      email: email,
       userCnic: userCnic,
       orgName: orgName,
     },
@@ -277,7 +297,7 @@ app.post("/users/login", async function (req, res) {
   } else {
     res.json({
       success: false,
-      message: `User with userCnic ${userCnic} is not registered with ${orgName}, Please register first.`,
+      message: `User with email ${email} is not registered with ${orgName}, Please register first.`,
     });
   }
 });
