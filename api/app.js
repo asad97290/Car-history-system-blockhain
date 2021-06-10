@@ -217,6 +217,20 @@ app.post("/users", async function (req, res) {
     return;
   }
 
+  try {
+    const query = {
+      selector: {
+        cnic: { "$eq": userCnic},
+      }
+    };
+    const users = await authDb.find(query);
+    if (users) {
+      res.json({success: false, message: "A user with this CNIC already exists!"});
+    }
+  } catch(e) {
+    console.error(e.statusCode);
+  }
+
   let response = await helper.getRegisteredUser(userCnic, orgName, true);
 
   logger.debug(
@@ -250,18 +264,12 @@ app.post("/users/login", async function (req, res) {
   /*var userCnic = req.body.userCnic;*/
   var email = req.body.email;
   var password = req.body.password;
-  var orgName = req.body.orgName;
 
   logger.debug("End point : /users");
   logger.debug("Email : " + email);
-  logger.debug("Org name  : " + orgName);
 
   if (!email) {
     res.json(getErrorMessage("'email'"));
-    return;
-  }
-  if (!orgName) {
-    res.json(getErrorMessage("'orgName'"));
     return;
   }
   if (!password) {
@@ -291,6 +299,7 @@ app.post("/users/login", async function (req, res) {
   }
 
   let userCnic = user.cnic;
+  let orgName = user.org;
 
   let certificate =  JSON.stringify(user.x509Identity.credentials.certificate);
 
@@ -311,7 +320,7 @@ app.post("/users/login", async function (req, res) {
   );
 
   if (isUserRegistered) {
-    res.json({ success: true, message: { token: token, userCnic: userCnic } });
+    res.json({ success: true, message: { token: token, userCnic: userCnic, orgName: orgName } });
   } else {
     res.json({
       success: false,
