@@ -283,10 +283,12 @@ app.post("/users/login", async function (req, res) {
      user = await authDb.get(email);  
   } catch(e) {
     console.error(e.statusCode);
+  }
+
+  if (!user) {
     res.json({success: false, message: "A user with this email does not exist!"});
     return;
   }
-  console.log('user', user);
 
   if (password  !== user.password) {
     let response = {
