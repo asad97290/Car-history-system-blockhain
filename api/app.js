@@ -204,8 +204,18 @@ app.post("/users", async function (req, res) {
     return;
   }
 
-  const user = await authDb.get(email);
-  console.log('user', user);
+  let user = null;
+
+  try {
+    user = await authDb.get(email);    
+  } catch(e) {
+    console.error(e.statusCode);
+  }
+
+  if (user) {
+    res.json({success: false, message: "A user with this email already exists!"});
+    return;
+  }
 
   let response = await helper.getRegisteredUser(userCnic, orgName, true);
 
@@ -259,9 +269,17 @@ app.post("/users/login", async function (req, res) {
     return;
   }
 
+  let user = null;
+  try {
+     user = await authDb.get(email);  
+  } catch(e) {
+    console.error(e);
+  }
 
-  let user = await authDb.get(email);
-  console.log('user', user);
+  if (!user) {
+    res.json({success: false, message: "A user with this email does not exist!"});
+    return;
+  }
 
   if (password  !== user.password) {
     let response = {
