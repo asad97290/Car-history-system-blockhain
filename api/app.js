@@ -293,7 +293,7 @@ app.post("/users/login", async function (req, res) {
   );
 
   if (isUserRegistered) {
-    res.json({ success: true, message: { token: token } });
+    res.json({ success: true, message: { token: token, userCnic: userCnic } });
   } else {
     res.json({
       success: false,
